@@ -799,7 +799,6 @@
         padding: 140px 40px 96px;
         position: relative;
         overflow: hidden;
-        box-shadow: var(--shadow-md);
         min-height: 680px;
         display: flex;
         align-items: center;
@@ -1459,17 +1458,13 @@
       }
 
       .dc-service-panel {
-        background: var(--white);
-        border-radius: var(--radius-xl);
-        padding: 56px;
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 56px;
         align-items: center;
-        box-shadow: var(--shadow-md);
       }
       .dc-service-photo {
-        aspect-ratio: 4 / 5;
+        aspect-ratio: 4 / 3;
         border-radius: var(--radius-lg);
         overflow: hidden;
         position: relative;
@@ -1845,10 +1840,28 @@
       }
       @media (max-width: 620px) {
         .dc-team-cards {
-          grid-template-columns: 1fr;
-          max-width: 380px;
-          margin-left: auto;
-          margin-right: auto;
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scroll-snap-type: x proximity;
+          scrollbar-width: none;
+          gap: 14px;
+          margin-left: -18px;
+          margin-right: -18px;
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-bottom: 4px;
+          -webkit-mask-image: linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
+          mask-image: linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
+        }
+        .dc-team-cards::-webkit-scrollbar {
+          display: none;
+        }
+        .dc-tcard {
+          flex: 0 0 78%;
+          max-width: 300px;
+          scroll-snap-align: start;
         }
       }
 
@@ -3905,13 +3918,28 @@
           align-self: flex-start;
         }
         /* AboutBlock — stack content + photo vertically on tablets and below */
+        #about {
+          padding-bottom: 40px;
+        }
         .dc-about-grid {
           grid-template-columns: 1fr;
           gap: 36px;
         }
+        /* padding-bottom:60px on content was only meant to balance the tall
+     2-col photo on desktop — stacked layout doesn't need that extra gap */
+        .dc-about-content {
+          padding-bottom: 0;
+        }
         .dc-about-photo {
-          margin-bottom: -80px;
+          min-height: auto;
+          margin-bottom: 0;
           max-width: 280px;
+        }
+        /* Dog: in flow once stacked (not absolute) so it never overlaps the text above it */
+        .dc-about-dog {
+          position: static;
+          width: 100%;
+          height: auto;
         }
       }
 
@@ -4059,8 +4087,9 @@
         }
         .dc-about-photo {
           min-height: auto !important;
-          max-width: 260px !important;
-          margin: 0 auto -130px !important; /* photo bleeds into Services area */
+          max-width: 340px !important;
+          width: 100% !important;
+          margin: 0 auto !important;
           aspect-ratio: auto !important;
         }
         /* Dog: in flow on mobile (not absolute), natural aspect */
@@ -4105,20 +4134,33 @@
           max-width: none;
         }
 
-        /* Services — 2×2 grid so all 4 tabs are visible without horizontal scroll */
+        /* Services — horizontal slider of tabs */
         .dc-tabs {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 4px;
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scroll-snap-type: x proximity;
+          scrollbar-width: none;
+          gap: 8px;
           padding: 6px;
           width: 100%;
-          border-radius: 22px;
+          justify-content: flex-start;
+          border-radius: 999px;
           margin-bottom: 28px;
+          -webkit-mask-image: linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
+          mask-image: linear-gradient(to right, transparent, black 24px, black calc(100% - 24px), transparent);
+        }
+        .dc-tabs::-webkit-scrollbar {
+          display: none;
         }
         .dc-tab {
-          padding: 12px 10px;
+          padding: 12px 18px;
           font-size: 13.5px;
           justify-content: center;
+          flex: 0 0 auto;
+          white-space: nowrap;
+          scroll-snap-align: start;
         }
         .dc-tab-icon {
           font-size: 16px;
@@ -4327,8 +4369,30 @@
           padding-top: 10px;
         }
 
-        /* Testimonials + Video */
+        /* Testimonials + Video — horizontal slider */
+        .dc-testi-row {
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scroll-snap-type: x proximity;
+          scrollbar-width: none;
+          gap: 14px;
+          margin-left: -18px;
+          margin-right: -18px;
+          padding-left: 18px;
+          padding-right: 18px;
+          padding-bottom: 4px;
+          -webkit-mask-image: linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
+          mask-image: linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
+        }
+        .dc-testi-row::-webkit-scrollbar {
+          display: none;
+        }
         .dc-testi {
+          flex: 0 0 85%;
+          max-width: 340px;
+          scroll-snap-align: start;
           padding: 24px;
         }
         .dc-testi-quote {
@@ -4463,7 +4527,7 @@
           display: none;
         }
         .dc-hero-card {
-          padding: 26px 18px;
+          padding: 96px 18px 56px;
         }
         .dc-h1 {
           font-size: 28px;
@@ -4498,6 +4562,13 @@
         }
         .dc-wrap {
           padding: 0 14px;
+        }
+        .dc-team-cards,
+        .dc-testi-row {
+          margin-left: -14px;
+          margin-right: -14px;
+          padding-left: 14px;
+          padding-right: 14px;
         }
         .dc-h2 {
           font-size: 24px;
@@ -4957,13 +5028,8 @@
       // Dog Care — section components
 
       function Nav({ activeSection, onNav }) {
-        const [scrolled, setScrolled] = useState(false);
+        const scrolled = false;
         const [menuOpen, setMenuOpen] = useState(false);
-        useEffect(() => {
-          const onScroll = () => setScrolled(window.scrollY > 20);
-          window.addEventListener("scroll", onScroll);
-          return () => window.removeEventListener("scroll", onScroll);
-        }, []);
         // Lock body scroll + Esc-to-close while burger menu is open
         useEffect(() => {
           if (!menuOpen) return;
@@ -4980,9 +5046,9 @@
         }, [menuOpen]);
         const links = [
           { id: "services", label: "Послуги" },
-          { id: "pricing", label: "Ціни" },
-          { id: "team", label: "Команда" },
           { id: "grooming", label: "Грумінг", href: "grooming.html" },
+          { id: "team", label: "Команда" },
+          { id: "pricing", label: "Ціни" },
           { id: "contact", label: "Контакти" },
         ];
         const handleNav = (id) => {
@@ -6598,7 +6664,7 @@
                       "Надсилаємо…"
                     ) : (
                       <React.Fragment>
-                        Записатися безкоштовно <Arrow />
+                        Записатися на послугу <Arrow />
                       </React.Fragment>
                     )}
                   </button>

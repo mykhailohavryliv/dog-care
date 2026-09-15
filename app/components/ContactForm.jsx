@@ -131,7 +131,7 @@ export default function ContactForm() {
               />
             </div>
             <button type="submit" className="dc-form-submit" disabled={sending}>
-              {sending ? "Надсилаємо…" : <>Записатися безкоштовно <Arrow /></>}
+              {sending ? "Надсилаємо…" : <>Записатися <Arrow /></>}
             </button>
           </form>
           {sent && (

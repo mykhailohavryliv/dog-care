@@ -1,0 +1,2783 @@
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dog Care · Адмін</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --dark: #1a1814;
+        --red: #ef233c;
+        --yellow: #ffd23f;
+        --bg: #f5f4f1;
+        --white: #fff;
+        --border: #e8e6e1;
+        --muted: #888480;
+        --radius: 12px;
+      }
+      body {
+        font-family: "Manrope", sans-serif;
+        background: var(--bg);
+        color: var(--dark);
+        min-height: 100vh;
+      }
+      .hidden {
+        display: none !important;
+      }
+
+      /* ── LOGIN ── */
+      #login-screen {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--dark);
+        padding: 20px;
+      }
+      .login-card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 48px 40px;
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+      }
+      .login-dog {
+        width: 72px;
+        height: 72px;
+        background: var(--dark);
+        border-radius: 50%;
+        margin: 0 auto 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .login-dog svg {
+        width: 44px;
+        height: 44px;
+      }
+      .login-card h1 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 6px;
+      }
+      .login-card p {
+        color: var(--muted);
+        font-size: 13px;
+        margin-bottom: 32px;
+      }
+      .fg {
+        margin-bottom: 14px;
+        text-align: left;
+      }
+      .fg label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 6px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .fg input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 15px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .fg input:focus {
+        border-color: var(--dark);
+      }
+      .btn-login {
+        width: 100%;
+        padding: 14px;
+        background: var(--red);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 6px;
+        transition: opacity 0.2s;
+      }
+      .btn-login:hover {
+        opacity: 0.88;
+      }
+      .login-err {
+        background: #fff0f1;
+        color: var(--red);
+        border: 1px solid #ffc0c7;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 13px;
+        margin-bottom: 14px;
+        display: none;
+      }
+      .login-err.show {
+        display: block;
+      }
+      .login-hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 20px;
+      }
+      .login-hint strong {
+        color: var(--dark);
+      }
+
+      /* ── HEADER ── */
+      #dashboard {
+        display: none;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+      #dashboard.visible {
+        display: flex;
+      }
+      .adm-header {
+        background: var(--dark);
+        height: 58px;
+        padding: 0 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        flex-shrink: 0;
+      }
+      .adm-header-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .adm-logo {
+        width: 34px;
+        height: 34px;
+        background: var(--red);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .adm-logo svg {
+        width: 20px;
+        height: 20px;
+      }
+      .adm-header-text {
+        line-height: 1.2;
+      }
+      .adm-header-title {
+        color: white;
+        font-weight: 800;
+        font-size: 14px;
+      }
+      .adm-header-sub {
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 11px;
+      }
+      .adm-header-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .adm-header-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: none;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .adm-header-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      /* ── TABS ── */
+      .adm-tabs {
+        background: white;
+        border-bottom: 2px solid var(--border);
+        padding: 0 28px;
+        display: flex;
+        gap: 2px;
+        flex-shrink: 0;
+      }
+      .adm-tab {
+        padding: 14px 18px;
+        border: none;
+        background: none;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition:
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .adm-tab.active {
+        color: var(--dark);
+        border-bottom-color: var(--red);
+      }
+      .adm-tab:hover:not(.active) {
+        color: var(--dark);
+      }
+
+      /* ── CONTENT ── */
+      .adm-body {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .adm-content {
+        max-width: 1060px;
+        margin: 0 auto;
+        padding: 28px;
+      }
+
+      .sec-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 24px;
+        gap: 16px;
+      }
+      .sec-header h2 {
+        font-size: 18px;
+        font-weight: 800;
+      }
+      .sec-header p {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 3px;
+      }
+      .btn-add {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--dark);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .btn-add:hover {
+        opacity: 0.82;
+      }
+
+      /* ── GRID CARDS ── */
+      .items-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+        gap: 14px;
+      }
+
+      .item-card {
+        background: white;
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transition: border-color 0.2s;
+      }
+      .item-card:hover {
+        border-color: #ccc;
+      }
+      .ic-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .ic-icon {
+        width: 44px;
+        height: 44px;
+        background: var(--bg);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        flex-shrink: 0;
+      }
+      .ic-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .ic-title {
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.35;
+      }
+      .ic-sub {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      .ic-price {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--red);
+      }
+      .ic-actions {
+        display: flex;
+        gap: 8px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+      }
+      .btn-edit,
+      .btn-del {
+        flex: 1;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s;
+      }
+      .btn-edit {
+        background: var(--bg);
+        color: var(--dark);
+      }
+      .btn-edit:hover {
+        background: #e8e6e0;
+      }
+      .btn-del {
+        background: #fff0f1;
+        color: var(--red);
+      }
+      .btn-del:hover {
+        background: #ffd7db;
+      }
+
+      /* ── TEAM CARD ── */
+      .tc-photo {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: var(--yellow);
+        flex-shrink: 0;
+      }
+      .tc-initials {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--yellow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 800;
+        color: var(--dark);
+        flex-shrink: 0;
+      }
+
+      /* ── PRICING ── */
+      .price-group {
+        background: white;
+        border: 1.5px solid var(--border);
+        border-radius: 14px;
+        margin-bottom: 14px;
+        overflow: hidden;
+      }
+      .pg-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg);
+      }
+      .pg-icon {
+        font-size: 18px;
+      }
+      .pg-title {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .pg-desc {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .pg-subtitle {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 10px 20px 6px;
+      }
+      .pr-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .pr-row:last-child {
+        border-bottom: none;
+      }
+      .pr-name {
+        font-size: 13px;
+        flex: 1;
+      }
+      .pr-dur {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .pr-input {
+        width: 110px;
+        padding: 6px 10px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: right;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .pr-input:focus {
+        border-color: var(--dark);
+      }
+      .pg-save {
+        margin: 12px 20px 14px;
+        padding: 9px 18px;
+        background: var(--dark);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      .pg-save:hover {
+        opacity: 0.82;
+      }
+      .pg-saved {
+        color: #16a34a;
+        font-size: 13px;
+        font-weight: 600;
+        margin-left: 10px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .pg-saved.show {
+        opacity: 1;
+      }
+      .pg-wtabs {
+        display: flex;
+        gap: 6px;
+        padding: 12px 20px 0;
+      }
+      .pg-wtab {
+        padding: 6px 14px;
+        border-radius: 8px;
+        border: 1.5px solid var(--border);
+        background: white;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .pg-wtab.active {
+        background: var(--dark);
+        color: white;
+        border-color: var(--dark);
+      }
+      .pg-wtab-panel {
+        border-top: 1px solid var(--border);
+        margin-top: 10px;
+      }
+
+      /* ── MODAL ── */
+      .modal-ov {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 32px 16px 60px;
+        z-index: 500;
+        overflow-y: auto;
+      }
+      .modal-ov.hidden {
+        display: none;
+      }
+      .modal {
+        background: white;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 560px;
+        padding: 30px;
+        position: relative;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+      }
+      .modal-title {
+        font-size: 18px;
+        font-weight: 800;
+        margin-bottom: 22px;
+      }
+      .modal-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 32px;
+        height: 32px;
+        background: var(--bg);
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+      .modal-close:hover {
+        background: var(--border);
+        color: var(--dark);
+      }
+      .fg-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+      .fg input,
+      .fg textarea {
+        width: 100%;
+        padding: 10px 13px;
+        border: 2px solid var(--border);
+        border-radius: 9px;
+        font-family: inherit;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+        resize: vertical;
+      }
+      .fg input:focus,
+      .fg textarea:focus {
+        border-color: var(--dark);
+      }
+      .modal-footer {
+        display: flex;
+        gap: 10px;
+        margin-top: 22px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+      }
+      .btn-cancel {
+        flex: 1;
+        padding: 12px;
+        border: 2px solid var(--border);
+        background: white;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--dark);
+        transition: border-color 0.15s;
+      }
+      .btn-cancel:hover {
+        border-color: #ccc;
+      }
+      .btn-save {
+        flex: 2;
+        padding: 12px;
+        background: var(--red);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s;
+      }
+      .btn-save:hover {
+        opacity: 0.88;
+      }
+
+      /* photo upload */
+      .photo-upload-wrap {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .photo-preview {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        background: var(--bg);
+        flex-shrink: 0;
+        border: 2px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        overflow: hidden;
+      }
+      .photo-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+      }
+      .photo-upload-right {
+        flex: 1;
+      }
+      .btn-upload {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        background: var(--bg);
+        border: 2px solid var(--border);
+        border-radius: 9px;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--dark);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .btn-upload:hover {
+        border-color: var(--dark);
+        background: #ece9e3;
+      }
+      .photo-hint {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+      #t-photo-file {
+        display: none;
+      }
+
+      /* dynamic rows */
+      .dyn-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .dyn-row {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+      }
+      .dyn-row input {
+        flex: 1;
+        padding: 8px 12px !important;
+      }
+      .dyn-del {
+        width: 30px;
+        height: 30px;
+        border: none;
+        background: #fff0f1;
+        color: var(--red);
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .btn-dyn-add {
+        padding: 8px 13px;
+        border: 2px dashed var(--border);
+        background: none;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 12px;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s;
+        text-align: left;
+      }
+      .btn-dyn-add:hover {
+        border-color: var(--dark);
+        color: var(--dark);
+      }
+
+      /* ── TOAST ── */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--dark);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        z-index: 999;
+        transform: translateY(60px);
+        opacity: 0;
+        transition: all 0.3s;
+        pointer-events: none;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* empty state */
+      .empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--muted);
+      }
+      .empty-icon {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+    </style>
+  <!-- Firebase SDK (завантажується першим) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyDFtRAWaJ5Rg67FS6VRb9Z9wL675BO5H0w",
+      authDomain: "dog-care-9aef2.firebaseapp.com",
+      projectId: "dog-care-9aef2",
+      storageBucket: "dog-care-9aef2.firebasestorage.app",
+      messagingSenderId: "527199586701",
+      appId: "1:527199586701:web:2afe10b198c127377b15c4"
+    });
+  </script>
+  </head>
+  <body>
+    <!-- ═══════════════════ LOGIN ═══════════════════ -->
+    <div id="login-screen">
+      <div class="login-card">
+        <div class="login-dog">
+          <svg
+            viewBox="0 0 40 45"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="20" cy="22" r="20" fill="#1A1814" />
+            <path
+              d="M30 13.9H27.9c.05-.35.19-.67.23-1.01H25.9V10.9c-.42.07-.85.36-1.17.63-.98.82-1.42 2.13-1.42 3.42v1.41c0 .34.03.62-.2.9-.69.8-1.71 1.34-2.64 1.78-2.73 1.28-6.11 1.69-8.77.01-1.97-1.25-3.12-3.26-3.93-5.38-.13.17-.18.39-.24.59-.14.42-.25.85-.31 1.29-.12.87-.07 1.78.26 2.61.9 2.23 3.58 3.21 5.83 2.93-.3.23-.59.44-.83.74-.79.96-.9 2.16-.88 3.36.006.52.27 1.08.11 1.6-.07.22-.22.43-.43.53-.15.07-.34.02-.43.18-.32.53-.52 1.18-.76 1.75-.3.69-.7 1.39-.9 2.12h2.57c0-.18.02-.37-.01-.55-.1-.5-.49-.82-.96-.98.52-.51 1.12-.94 1.68-1.39.22-.18.61-.4.74-.65.05-.1.01-.23.01-.34-.01-.23-.01-.47.03-.7.15-.9 6.66-3.18 8.64-.27.22.26.64.71.99.77.13.02.27-.04.39-.08l.74-.25c.93-.31 1.88-.59 2.8-.93-.21.68-.12 1.49.66 1.73.29.09.56.06.85.03v-3.95c-.65 0-1.35.12-1.99.23.36-.41.73-.78.97-1.28.69-1.42.51-3.1.04-4.56-.16-.49-.43-.95-.57-1.44.17 0 .38-.04.54.02.24.09.43.39.66.52.52.3 1.1.41 1.67.19 1.07-.4 1.5-1.55 1.38-2.61-.03-.23-.07-.76-.12-.97H30V13.9z"
+              fill="white"
+            />
+            <path
+              d="M15.5 31.4h2.57c-.11-.87-.79-1.5-1.68-1.52.16-.59.52-1.17.85-1.68.17-.25 1.28-2.11 1.36-2.41-1.85-.31-3.78.54-4.12.91-.16.11.75 2.43.79 2.67.12.67.28 1.35.38 2.03zm12.46.04c0-.62-.36-1.14-.98-1.38-.21-.08-.81-.05-.88-.31-.13-.18-.53-2.09-.7-2.67-.44.04-1.53.43-1.57.55-.03.09.17.56.19.63.07.18.15.38.22.57.24.63.48 1.25.72 1.88.1.34.14.44.21.78h2.79v-.05z"
+              fill="white"
+            />
+            <path
+              d="M23.45 16.06s3.06 1.02 3.74 1.62c1.05.92 2.01 1.95.96 4.97-.88-2.74-3.84-5.23-4.94-5.45-.13-.03-.13-.18-.05-.38.08-.2-.01-.84.29-.76z"
+              fill="#EF233C"
+            />
+          </svg>
+        </div>
+        <h1>Адмін панель</h1>
+        <p>Dog Care · Управління контентом</p>
+        <div class="login-err" id="login-err">Невірний логін або пароль</div>
+        <div class="fg">
+          <label>Логін</label>
+          <input
+            type="text"
+            id="inp-user"
+            placeholder="admin"
+            autocomplete="username"
+          />
+        </div>
+        <div class="fg">
+          <label>Пароль</label>
+          <input
+            type="password"
+            id="inp-pass"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+        </div>
+        <button class="btn-login" onclick="doLogin()">Увійти</button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+    <div id="dashboard">
+      <header class="adm-header">
+        <div class="adm-header-left">
+          <div class="adm-logo">
+            <svg viewBox="0 0 20 22" fill="none">
+              <path
+                d="M15 7H13.9c.02-.17.09-.33.11-.5H12.9V5.5c-.21.04-.42.18-.58.31-.49.41-.71 1.06-.71 1.71v.7c0 .17.01.31-.1.45-.34.4-.86.67-1.32.89-1.36.64-3.05.84-4.38.01-.98-.62-1.56-1.63-1.97-2.69-.06.08-.09.19-.12.29-.07.21-.12.43-.15.64-.06.44-.04.89.13 1.31.45 1.12 1.79 1.6 2.92 1.46-.15.12-.3.22-.42.37-.4.48-.44 1.08-.44 1.68.003.26.13.54.05.8-.03.11-.11.22-.21.27-.07.04-.17.01-.21.09-.16.27-.26.59-.38.88-.15.34-.35.69-.45 1.06h1.29c0-.09.01-.18-.01-.27-.05-.25-.24-.41-.48-.49.26-.25.56-.47.84-.7.11-.09.3-.2.37-.32.02-.05 0-.12 0-.17-.005-.12 0-.23.01-.35.07-.45 3.33-1.59 4.32-.14.11.13.32.36.49.38.06.01.13-.02.19-.04l.37-.12c.46-.16.94-.3 1.4-.47-.1.34-.06.74.33.87.15.04.28.03.42.02v-1.98c-.33 0-.68.06-1 .12.18-.21.37-.39.49-.64.35-.71.25-1.55.02-2.28-.08-.25-.21-.48-.29-.72.08 0 .19-.02.27.01.12.04.21.2.33.26.26.15.55.2.84.09.53-.2.75-.77.69-1.3-.01-.12-.04-.38-.06-.49H15V7z"
+                fill="white"
+              />
+            </svg>
+          </div>
+          <div class="adm-header-text">
+            <div class="adm-header-title">Dog Care Admin</div>
+            <div class="adm-header-sub">Керування контентом сайту</div>
+          </div>
+        </div>
+        <div class="adm-header-right">
+          <a href="/" target="_blank" class="adm-header-btn">
+            🌐 Відкрити сайт
+          </a>
+          <button class="adm-header-btn" onclick="doLogout()">Вийти</button>
+        </div>
+      </header>
+
+      <nav class="adm-tabs">
+        <button class="adm-tab active" onclick="showTab('services', this)">
+          🦴 Послуги
+        </button>
+        <button class="adm-tab" onclick="showTab('team', this)">
+          👥 Команда
+        </button>
+        <button class="adm-tab" onclick="showTab('pricing', this)">
+          💰 Ціни
+        </button>
+        <button class="adm-tab" onclick="showTab('socials', this)">
+          🔗 Соцмережі
+        </button>
+        <button class="adm-tab" onclick="showTab('grooming', this)">
+          ✂️ Грумінг
+        </button>
+      </nav>
+
+      <div class="adm-body">
+        <div class="adm-content">
+          <!-- ── SERVICES ── -->
+          <div id="tab-services">
+            <div class="sec-header">
+              <div>
+                <h2>Послуги</h2>
+                <p>Редагуйте, додавайте або видаляйте послуги Dog Care</p>
+              </div>
+              <button class="btn-add" onclick="openServiceModal(-1)">
+                + Додати послугу
+              </button>
+            </div>
+            <div class="items-grid" id="services-grid"></div>
+          </div>
+
+          <!-- ── TEAM ── -->
+          <div id="tab-team" class="hidden">
+            <div class="sec-header">
+              <div>
+                <h2>Команда</h2>
+                <p>Додавайте, редагуйте або видаляйте членів команди</p>
+              </div>
+              <button class="btn-add" onclick="openTeamModal(-1)">
+                + Додати члена команди
+              </button>
+            </div>
+            <div class="items-grid" id="team-grid"></div>
+          </div>
+
+          <!-- ── PRICING ── -->
+          <div id="tab-pricing" class="hidden">
+            <div class="sec-header">
+              <div>
+                <h2>Ціни</h2>
+                <p>Редагуйте ціни для кожної категорії послуг</p>
+              </div>
+            </div>
+            <div id="pricing-list"></div>
+          </div>
+
+          <!-- ── SOCIALS ── -->
+          <div id="tab-socials" class="hidden">
+            <div class="sec-header">
+              <div>
+                <h2>Соцмережі</h2>
+                <p>Посилання на соціальні мережі у футері сайту</p>
+              </div>
+            </div>
+            <div style="max-width: 600px">
+              <div class="item-card" style="padding: 28px 28px 24px; gap: 0">
+                <div class="fg">
+                  <label>Instagram</label>
+                  <input
+                    id="sl-instagram"
+                    type="url"
+                    placeholder="https://instagram.com/dogcare888"
+                  />
+                </div>
+                <div class="fg">
+                  <label>YouTube</label>
+                  <input
+                    id="sl-youtube"
+                    type="url"
+                    placeholder="https://youtube.com/@dogcare888"
+                  />
+                </div>
+                <div class="fg">
+                  <label>TikTok</label>
+                  <input
+                    id="sl-tiktok"
+                    type="url"
+                    placeholder="https://tiktok.com/@dogcare888"
+                  />
+                </div>
+                <div class="fg">
+                  <label>Viber (номер телефону)</label>
+                  <input id="sl-viber" type="tel" placeholder="+380989013988" />
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--muted);
+                      margin-top: 4px;
+                    "
+                  >
+                    Формат: +380XXXXXXXXX
+                  </div>
+                </div>
+                <div class="fg">
+                  <label>Telegram (username або посилання)</label>
+                  <input
+                    id="sl-telegram"
+                    placeholder="dogcare888 або https://t.me/dogcare888"
+                  />
+                </div>
+                <div
+                  style="
+                    margin: 16px 0 8px;
+                    padding-top: 16px;
+                    border-top: 1px solid var(--border);
+                  "
+                >
+                  <div
+                    style="
+                      font-weight: 700;
+                      font-size: 13px;
+                      margin-bottom: 2px;
+                    "
+                  >
+                    Telegram-бот для заявок
+                  </div>
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--muted);
+                      margin-bottom: 12px;
+                    "
+                  >
+                    Заявки зі сторінки grooming.html надсилатимуться у вказаний
+                    чат
+                  </div>
+                </div>
+                <div class="fg">
+                  <label>Bot Token</label>
+                  <input id="sl-tg-bot-token" placeholder="123456:ABC-DEF..." />
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--muted);
+                      margin-top: 4px;
+                    "
+                  >
+                    Отримайте у
+                    <a
+                      href="https://t.me/BotFather"
+                      target="_blank"
+                      rel="noopener"
+                      style="color: var(--accent-deep)"
+                      >@BotFather</a
+                    >
+                  </div>
+                </div>
+                <div class="fg">
+                  <label>Chat ID</label>
+                  <input
+                    id="sl-tg-chat-id"
+                    placeholder="-100123456789 або @username"
+                  />
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: var(--muted);
+                      margin-top: 4px;
+                    "
+                  >
+                    Ваш особистий ID або ID групи/каналу
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    margin-top: 8px;
+                  "
+                >
+                  <button class="pg-save" onclick="saveSocials()">
+                    Зберегти
+                  </button>
+                  <span class="pg-saved" id="socials-saved">✓ Збережено</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── GROOMING ── -->
+          <div id="tab-grooming" class="hidden">
+            <div class="sec-header">
+              <div>
+                <h2>Послуги грумінгу</h2>
+                <p>Редагуйте категорії та ціни на сторінці grooming.html</p>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                <button class="btn-add" onclick="openGrmCatModal(-1)">
+                  + Додати категорію
+                </button>
+                <button
+                  class="btn-edit"
+                  style="
+                    background: #fff8d0;
+                    border: 1.5px solid #ffd23f;
+                    color: #7a5c00;
+                  "
+                  onclick="window.open('grooming.html', '_blank')"
+                >
+                  🔗 Відкрити grooming.html
+                </button>
+              </div>
+            </div>
+
+            <!-- Текст та контакти сторінки -->
+            <div class="price-group" style="margin-bottom: 22px">
+              <div class="pg-head">
+                <span class="pg-icon">📝</span>
+                <div>
+                  <div class="pg-title">Текст та контакти сторінки</div>
+                  <div class="pg-desc">
+                    Підзаголовок, статистика, телефони, Instagram
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  padding: 16px 20px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 10px;
+                "
+              >
+                <div class="fg" style="margin-bottom: 0">
+                  <label>Підзаголовок (опис під заголовком героя)</label>
+                  <textarea
+                    id="gm-subtitle"
+                    rows="2"
+                    placeholder="Спостерігайте за доглядом..."
+                  ></textarea>
+                </div>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 120px 1fr 120px 1fr 120px 1fr;
+                    gap: 8px;
+                    align-items: end;
+                  "
+                >
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Стат. 1 №</label
+                    ><input id="gm-s1num" placeholder="5+" />
+                  </div>
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Стат. 1 текст</label
+                    ><input id="gm-s1lbl" placeholder="років досвіду" />
+                  </div>
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Стат. 2 №</label
+                    ><input id="gm-s2num" placeholder="500+" />
+                  </div>
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Стат. 2 текст</label
+                    ><input id="gm-s2lbl" placeholder="щасливих клієнтів" />
+                  </div>
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Стат. 3 №</label
+                    ><input id="gm-s3num" placeholder="100%" />
+                  </div>
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Стат. 3 текст</label
+                    ><input id="gm-s3lbl" placeholder="прозорість" />
+                  </div>
+                </div>
+                <div class="fg-2" style="margin-bottom: 0">
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Телефон 1</label
+                    ><input id="gm-ph1" placeholder="+380 66 723 51 02" />
+                  </div>
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Телефон 2</label
+                    ><input id="gm-ph2" placeholder="+380 98 901 39 88" />
+                  </div>
+                </div>
+                <div class="fg-2" style="margin-bottom: 0">
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Instagram (без @)</label
+                    ><input id="gm-ig" placeholder="dog_care_grooming_if" />
+                  </div>
+                  <div class="fg" style="margin-bottom: 0">
+                    <label>Адреса</label
+                    ><input
+                      id="gm-addr"
+                      placeholder="вул. Молодіжка, 40, Івано-Франківськ"
+                    />
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                    padding-top: 4px;
+                  "
+                >
+                  <button class="pg-save" onclick="saveGrmMeta()">
+                    Зберегти текст
+                  </button>
+                  <span class="pg-saved" id="grm-meta-saved">✓ Збережено</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Галерея фото -->
+            <div class="price-group" style="margin-bottom: 22px">
+              <div class="pg-head" style="justify-content: space-between">
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <span class="pg-icon">🖼</span>
+                  <div>
+                    <div class="pg-title">Галерея фото</div>
+                    <div class="pg-desc">
+                      Фото з'являться на сторінці grooming.html у розділі «Наші
+                      роботи»
+                    </div>
+                  </div>
+                </div>
+                <label class="btn-add" style="cursor: pointer; margin: 0">
+                  + Додати фото
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    style="display: none"
+                    onchange="grmAddPhotos(this)"
+                  />
+                </label>
+              </div>
+              <div
+                id="grm-photo-grid"
+                style="
+                  display: grid;
+                  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                  gap: 10px;
+                  padding: 16px 20px 20px;
+                "
+              ></div>
+            </div>
+
+            <div id="grooming-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ SERVICE MODAL ═══════════════════ -->
+    <div class="modal-ov hidden" id="svc-modal">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('svc-modal')">✕</button>
+        <div class="modal-title" id="svc-modal-title">Послуга</div>
+
+        <div class="fg-2">
+          <div class="fg">
+            <label>Іконка (емодзі)</label><input id="s-icon" placeholder="🦴" />
+          </div>
+          <div class="fg">
+            <label>Назва вкладки</label
+            ><input id="s-tab" placeholder="Тренування" />
+          </div>
+        </div>
+        <div class="fg">
+          <label>Заголовок послуги</label
+          ><input id="s-title" placeholder="Школа тренувань для собак" />
+        </div>
+        <div class="fg">
+          <label>Опис</label
+          ><textarea
+            id="s-desc"
+            rows="3"
+            placeholder="Короткий опис послуги..."
+          ></textarea>
+        </div>
+        <div class="fg-2">
+          <div class="fg">
+            <label>Ціна (число)</label
+            ><input id="s-price" type="number" placeholder="350" />
+          </div>
+          <div class="fg">
+            <label>Одиниця</label><input id="s-unit" placeholder="₴ / година" />
+          </div>
+        </div>
+        <div class="fg">
+          <label>URL фото</label><input id="s-src" placeholder="https://..." />
+        </div>
+        <div class="fg">
+          <label>Особливості (по одній)</label>
+          <div class="dyn-list" id="s-features"></div>
+          <button
+            class="btn-dyn-add"
+            onclick="addDynRow('s-features', 'Особливість...')"
+          >
+            + Додати
+          </button>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('svc-modal')">
+            Скасувати
+          </button>
+          <button class="btn-save" onclick="saveService()">Зберегти</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ TEAM MODAL ═══════════════════ -->
+    <div class="modal-ov hidden" id="team-modal">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('team-modal')">
+          ✕
+        </button>
+        <div class="modal-title" id="team-modal-title">Член команди</div>
+
+        <div class="fg-2">
+          <div class="fg">
+            <label>Ім'я та прізвище</label
+            ><input id="t-name" placeholder="Маївський Павло" />
+          </div>
+          <div class="fg">
+            <label>Посада</label
+            ><input id="t-role" placeholder="Кінолог‑інструктор" />
+          </div>
+        </div>
+        <div class="fg-2">
+          <div class="fg">
+            <label>Бейдж (бейдж на картці)</label
+            ><input id="t-badge" placeholder="~300 собак" />
+          </div>
+          <div class="fg">
+            <label>Спеціалізація</label
+            ><input id="t-spec" placeholder="Дресирування з 2016" />
+          </div>
+        </div>
+        <div class="fg">
+          <label>Фото</label>
+          <div class="photo-upload-wrap">
+            <div class="photo-preview" id="t-photo-preview">👤</div>
+            <div class="photo-upload-right">
+              <button
+                type="button"
+                class="btn-upload"
+                onclick="document.getElementById('t-photo-file').click()"
+              >
+                📁 Завантажити фото
+              </button>
+              <div class="photo-hint" id="t-photo-hint">
+                JPG, PNG, WebP · максимум 5 МБ
+              </div>
+            </div>
+          </div>
+          <input
+            type="file"
+            id="t-photo-file"
+            accept="image/*"
+            onchange="handlePhotoUpload(this)"
+          />
+        </div>
+        <div class="fg">
+          <label>Біографія</label
+          ><textarea
+            id="t-bio"
+            rows="4"
+            placeholder="Коротка біографія..."
+          ></textarea>
+        </div>
+        <div class="fg-2">
+          <div class="fg">
+            <label>Роки досвіду</label
+            ><input id="t-years" type="number" placeholder="10" />
+          </div>
+          <div class="fg">
+            <label>Собак навчено</label
+            ><input id="t-dogs" type="number" placeholder="300" />
+          </div>
+        </div>
+        <div class="fg-2">
+          <div class="fg">
+            <label>Задоволеність</label
+            ><input id="t-satisf" placeholder="100%" />
+          </div>
+          <div class="fg">
+            <label>Улюблена порода</label
+            ><input id="t-fav" placeholder="Лабрадор" />
+          </div>
+        </div>
+        <div class="fg">
+          <label>Цитата</label
+          ><textarea
+            id="t-quote"
+            rows="2"
+            placeholder="Девіз або цитата..."
+          ></textarea>
+        </div>
+        <div class="fg">
+          <label>Навички (по одній)</label>
+          <div class="dyn-list" id="t-skills"></div>
+          <button
+            class="btn-dyn-add"
+            onclick="addDynRow('t-skills', 'Навичка...')"
+          >
+            + Додати
+          </button>
+        </div>
+        <div class="fg">
+          <label>Освіта (по одному рядку)</label>
+          <div class="dyn-list" id="t-edu"></div>
+          <button class="btn-dyn-add" onclick="addDynRow('t-edu', 'Освіта...')">
+            + Додати
+          </button>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('team-modal')">
+            Скасувати
+          </button>
+          <button class="btn-save" onclick="saveTeamMember()">Зберегти</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════ GROOMING CATEGORY MODAL ═══════════════════ -->
+    <div class="modal-ov hidden" id="grm-cat-modal">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('grm-cat-modal')">
+          ✕
+        </button>
+        <div class="modal-title" id="grm-cat-title">Категорія грумінгу</div>
+        <div class="fg-2">
+          <div class="fg">
+            <label>Іконка (емодзі)</label
+            ><input id="gc-icon" placeholder="🛁" />
+          </div>
+          <div class="fg">
+            <label>Назва категорії</label
+            ><input id="gc-label" placeholder="Гігієнічний догляд" />
+          </div>
+        </div>
+        <div class="fg">
+          <label>Опис (підзаголовок)</label
+          ><input
+            id="gc-desc"
+            placeholder="Купання, сушка, базовий догляд..."
+          />
+        </div>
+        <div class="fg">
+          <label>Примітка (внизу блоку, необов'язково)</label
+          ><textarea
+            id="gc-note"
+            rows="3"
+            placeholder="Наприклад: ціна залежить від ступеня линьки..."
+          ></textarea>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-cancel" onclick="closeModal('grm-cat-modal')">
+            Скасувати
+          </button>
+          <button class="btn-save" onclick="saveGrmCat()">Зберегти</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ═══════════════════ AUTH ═══════════════════
+      // Client-side gate only — anyone reading page source can see this,
+      // it's not real authentication. Set your own value before deploying;
+      // the previous password ("dogcare2024") already leaked via git history
+      // and must be treated as compromised.
+      const CREDS = { user: "admin", pass: "SET-YOUR-OWN-PASSWORD-HERE" };
+
+      function checkAuth() {
+        return sessionStorage.getItem("dc_admin") === "1";
+      }
+      function doLogin() {
+        const u = document.getElementById("inp-user").value.trim();
+        const p = document.getElementById("inp-pass").value;
+        if (u === CREDS.user && p === CREDS.pass) {
+          sessionStorage.setItem("dc_admin", "1");
+          document.getElementById("login-screen").classList.add("hidden");
+          document.getElementById("dashboard").classList.add("visible");
+          initDashboard();
+        } else {
+          document.getElementById("login-err").classList.add("show");
+        }
+      }
+      function doLogout() {
+        sessionStorage.removeItem("dc_admin");
+        location.reload();
+      }
+      document.getElementById("inp-pass").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doLogin();
+      });
+      document.getElementById("inp-user").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doLogin();
+      });
+
+      // ═══════════════════ DEFAULT DATA ═══════════════════
+      const DEFAULT_SERVICES = [
+        {
+          id: "kinology",
+          icon: "🦴",
+          tab: "Тренування",
+          title: "Школа тренувань для собак",
+          desc: "Загальний курс кінології та курс охорони. Навчаємо будувати стосунки з вашим улюбленцем без криків, стресу та страху.",
+          features: [
+            "У школі — 350 ₴/год",
+            "На виїзд — 700 ₴/год",
+            "Загальний курс",
+            "Курс охорони",
+            "12 занять/міс",
+            "Для учнів — тренування безкошт.",
+          ],
+          price: 350,
+          unit: "₴ / година",
+          src: "https://images.unsplash.com/photo-1587764379873-97837921fd44?w=900&q=80",
+        },
+        {
+          id: "grooming",
+          icon: "✂️",
+          tab: "Грумінг",
+          title: "Грумінг із любов'ю до породи",
+          desc: "Стрижки, тримінг, гігієна, SPA. Працюємо тільки гіпоалергенною косметикою преміум‑класу — і ніколи не на крик.",
+          features: [
+            "Породна стрижка",
+            "Гігієнічна обрізка",
+            "Тримінг жорсткошерстих",
+            "SPA з пілінгом",
+            "Експрес‑линька",
+            "Перукарська проба",
+          ],
+          price: 500,
+          unit: "₴ / сеанс",
+          src: "https://images.unsplash.com/photo-1591946614720-90a587da4a36?w=900&q=80",
+        },
+        {
+          id: "hotel",
+          icon: "🏡",
+          tab: "Зооготель",
+          title: "Зооготель і зоосадок",
+          desc: "Не клітки, а справжні кімнати з ліжечками і прогулянковим двором. Підтримка 24/7, регулярні вигули та звіти власникам.",
+          features: [
+            "Зоосадок — від 230 ₴/день",
+            "Зооготель — від 550 ₴/доба",
+            "Абонемент 30 днів",
+            "Регулярні вигули",
+            "Контроль здоров'я",
+            "Щоденні фотозвіти",
+          ],
+          price: 230,
+          unit: "₴ / день",
+          src: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=900&q=80",
+        },
+        {
+          id: "nanny",
+          icon: "🚶",
+          tab: "Зооняня",
+          title: "Зооняня — вигул і догляд",
+          desc: "Зооняня приїжджає до вас додому та забирає песика на прогулянку. Песик закриває усі свої потреби, грається, повторює команди і тренується.",
+          features: [
+            "Один вигул — 400 ₴",
+            "Подвійний — 600 ₴",
+            "Тренування в процесі",
+            "Ментальні ігри",
+            "Фізична активність",
+            "Офіційний договір",
+          ],
+          price: 400,
+          unit: "₴ / вигул",
+          src: "https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=900&q=80",
+        },
+      ];
+
+      const DEFAULT_TRAINERS = [
+        {
+          name: "Маївський Павло",
+          role: "Кінолог‑інструктор",
+          badge: "~300 собак",
+          spec: "Дресирування з 2016",
+          src: "",
+          bio: "З дитинства захоплювався собаками. У 2014 р. закінчив аграрний коледж за спеціальністю «ветеринарія». У 2014–2016 рр. — молодший кінолог‑інструктор ТОВ «Секюрайті». З 2016 року займається дресируванням собак — вивчив близько 300 вихованців.",
+          education: [
+            "Аграрний коледж — ветеринарія, 2014",
+            "ТОВ «Секюрайті» — кінолог‑інструктор, 2014–16",
+            "Практика 3 роки у ветклініці «Олвет»",
+          ],
+          skills: [
+            "Базовий курс",
+            "Захисно‑караульна служба",
+            "Корекція поведінки",
+            "Робота з великими породами",
+          ],
+          stats: { years: 10, dogs: 300, satisf: "100%" },
+          favorite: "Німецький вівчар",
+          quote: "Собаки слухають, але тих, хто вміє говорити.",
+          languages: ["Українська"],
+        },
+        {
+          name: "Попадюк Тарас",
+          role: "Кінолог, ветфельдшер",
+          badge: "ЛНУВМ",
+          spec: "Спільна мова з кожною",
+          src: "",
+          bio: "Тварини для нього все. Закінчив Рогатинський коледж та Львівський університет за фахом «ветеринарна медицина». 2 роки працював у ветклініці. З 2022 р. займається дресируванням.",
+          education: [
+            "Рогатинський коледж — ветмедицина",
+            "Львівський національний університет ветмедицини",
+            "Дресирування собак з 2022",
+          ],
+          skills: [
+            "Щенята",
+            "Соціалізація",
+            "Перша ветдопомога",
+            "Праця з нервовими собаками",
+          ],
+          stats: { years: 4, dogs: 220, satisf: "99%" },
+          favorite: "Лабрадор",
+          quote: "Знайду спільну мову з кожною собакою.",
+          languages: ["Українська"],
+        },
+        {
+          name: "Плещинська Вероніка",
+          role: "Зоопсихолог, кінолог",
+          badge: "Вроцлав",
+          spec: "Корекція поведінки",
+          src: "",
+          bio: "Закінчила курси зоопсихології у м. Вроцлав (Польща). Працювала в собачому притулку та займалася консультаціями, допомагаючи людям виправляти поведінку собак вдома. З 2021 р. — службова кінологія.",
+          education: [
+            "Курси зоопсихології, Вроцлав, Польща",
+            "Робота в собачому притулку",
+            "Службова кінологія з 2021",
+          ],
+          skills: [
+            "Реактивність на поводку",
+            "Страхи та фобії",
+            "Консультації вдома",
+            "Робота з притульними",
+          ],
+          stats: { years: 5, dogs: 180, satisf: "98%" },
+          favorite: "Безпородні врятовані",
+          quote: "Якщо ваша собака робить все, що їй заманеться — є рішення.",
+          languages: ["Українська", "Польська"],
+        },
+      ];
+
+      const DEFAULT_PRICING = [
+        {
+          id: "consult",
+          label: "Консультації",
+          icon: "💬",
+          desc: "Індивідуальні консультації з кінологом.",
+          rows: [
+            { service: "У школі", duration: "1 година", price: "700 ₴" },
+            {
+              service: "На виїзд",
+              duration: "1 година",
+              price: "~900 ₴",
+              note: "без пального",
+            },
+          ],
+        },
+        {
+          id: "group",
+          label: "Групові заняття",
+          icon: "🐾",
+          desc: "Заняття у міні‑групі.",
+          rows: [
+            {
+              service: "1 раз на тиждень · 1 год · школа",
+              duration: "1 заняття",
+              price: "350 ₴",
+            },
+          ],
+          footnote: "Для діючих учнів школи DOG CARE тренування безкоштовні.",
+        },
+        {
+          id: "nanny",
+          label: "Зооняня",
+          icon: "🚶",
+          desc: "Вигул, ментальні ігри, фізична активність.",
+          rows: [
+            { service: "Один вигул", duration: "1 година", price: "400 ₴" },
+            {
+              service: "Подвійний вигул",
+              duration: "2 години",
+              price: "600 ₴",
+            },
+          ],
+        },
+        {
+          id: "courses",
+          label: "Курси кінології",
+          icon: "🎓",
+          desc: "Повноцінні курси дресирування.",
+          rows: [
+            {
+              service: "Загальний курс",
+              duration: "мін. 3–4 міс · 12 занять/міс",
+              price: "180 €/міс",
+            },
+            {
+              service: "Курс охорони",
+              duration: "1–2 міс · 12 занять/міс",
+              price: "230 €/міс",
+            },
+          ],
+        },
+        {
+          id: "hotel",
+          label: "Зооготель",
+          icon: "🏡",
+          desc: "Передержка з прогулянками і доглядом. Ціни залежать від ваги собаки.",
+          weightTabs: [
+            {
+              label: "до 10 кг",
+              rows: [
+                { service: "1 година", price: "230 ₴" },
+                { service: "Зоосадок · день", price: "550 ₴" },
+                { service: "Зооготель · доба", price: "650 ₴" },
+                { service: "Абонемент 30 днів", price: "17 550 ₴" },
+              ],
+            },
+            {
+              label: "10–25 кг",
+              rows: [
+                { service: "1 година", price: "280 ₴" },
+                { service: "Зоосадок · день", price: "650 ₴" },
+                { service: "Зооготель · доба", price: "750 ₴" },
+                { service: "Абонемент 30 днів", price: "20 250 ₴" },
+              ],
+            },
+            {
+              label: "від 25 кг",
+              rows: [
+                { service: "1 година", price: "330 ₴" },
+                { service: "Зоосадок · день", price: "750 ₴" },
+                { service: "Зооготель · доба", price: "850 ₴" },
+                { service: "Абонемент 30 днів", price: "22 950 ₴" },
+              ],
+            },
+          ],
+        },
+      ];
+
+      // ═══════════════════ STATE ═══════════════════
+      let DB = {
+        services: null,
+        trainers: null,
+        pricing: null,
+        grooming: null,
+        grooming_meta: null,
+      };
+      let editSvcIdx = -1;
+      let editTeamIdx = -1;
+      let editGrmCatIdx = -1;
+      let currentPhotoBase64 = "";
+      let photoChanged = false;
+
+      function getOriginalSrc(name) {
+        try {
+          // Read directly from site tab (no localStorage size limit)
+          const origs =
+            (window.opener && window.opener.__trainers_originals__) || [];
+          const found = origs.find((t) => t.name === name);
+          if (found && found.src) return found.src;
+        } catch (e) {}
+        return "";
+      }
+
+      // For display only — never stored in localStorage
+      function getDisplaySrc(t) {
+        return t.src || getOriginalSrc(t.name) || "";
+      }
+
+      const DEFAULT_GROOMING_META = {
+        subtitle:
+          "Спостерігайте за доглядом вашого улюбленця в режимі реального часу. Скляні стіни, відкритий простір, повна прозорість.",
+        stats: [
+          { num: "5+", label: "років досвіду" },
+          { num: "500+", label: "щасливих клієнтів" },
+          { num: "100%", label: "прозорість" },
+        ],
+        phone1: "+380 66 723 51 02",
+        phone2: "+380 98 901 39 88",
+        instagram: "dog_care_grooming_if",
+        address: "вул. Молодіжка, 40, Івано-Франківськ",
+      };
+
+      const DEFAULT_GROOMING = [
+        {
+          id: "hygiene",
+          icon: "🛁",
+          label: "Гігієнічний догляд",
+          desc: "Купання, сушка, базовий догляд — для довгошерстних порід",
+          note: "Включає: купання з профкосметикою та кондиціонером, сушку з розчісуванням, стрижку подушечок лап та паху, чищення вух, стрижку кігтів, протирання очей, мінімальне розколтунювання.",
+          rows: [
+            { name: "Йоркширський тер'єр", price: "800 ₴" },
+            { name: "Мальтезе", price: "800 ₴" },
+            { name: "Той-пудель", price: "800–850 ₴" },
+            { name: "Метис до 10 кг", price: "650–750 ₴" },
+            { name: "Метис 10–25 кг", price: "900–1050 ₴" },
+            { name: "Метис 25–45 кг", price: "1100–1200 ₴" },
+          ],
+        },
+        {
+          id: "full",
+          icon: "✂️",
+          label: "Повний комплекс",
+          desc: "Гігієнічний догляд + модельна/породна стрижка",
+          note: "Повний комплекс включає все з гігієнічного догляду плюс: модельну або породну стрижку, повноцінну стрижку хвостика та фінішне полірування шерсті.",
+          rows: [
+            { name: "Йоркширський тер'єр", price: "900–1000 ₴" },
+            { name: "Мальтезе", price: "950–1050 ₴" },
+            { name: "Мініатюрний пудель", price: "1000–1100 ₴" },
+            { name: "Кокер-спанієль", price: "1100–1250 ₴" },
+            { name: "Золотистий ретривер", price: "1300–1500 ₴" },
+            { name: "Великий пудель", price: "від 1500 ₴" },
+          ],
+        },
+        {
+          id: "hard",
+          icon: "🐕",
+          label: "Жорсткошерстні та короткошерстні",
+          desc: "Купання, фурмінація, тримінг, полірування",
+          note: "Ціна залежить від ступеня линьки, стану шерсті та поведінки тварини. При перевищенні вагової категорії — +15–20% до ціни.",
+          rows: [
+            { name: "Мопс / Французький бульдог", price: "700–800 ₴" },
+            { name: "Такса", price: "700–750 ₴" },
+            { name: "Ягдтер'єр / Фокстер'єр", price: "900–1050 ₴" },
+            { name: "Нім. вівчарка (Експрес линька)", price: "900 ₴" },
+            { name: "Хаскі / Лабрадор", price: "1200–1400 ₴" },
+            { name: "Велика порода 35+ кг", price: "від 1600 ₴" },
+          ],
+        },
+        {
+          id: "cats",
+          icon: "🐱",
+          label: "Кішки",
+          desc: "Сухе вичісування або повне купання",
+          note: "Для котів рекомендуємо заздалегідь уточнити поведінку. При агресії майстер може попросити власника бути присутнім.",
+          rows: [
+            { name: "Звичайний кіт (сухе вичісування)", price: "700 ₴" },
+            { name: "Британець (сухе вичісування)", price: "800 ₴" },
+            { name: "Звичайний кіт (повний пакет)", price: "1000 ₴" },
+            { name: "Британець (повний пакет)", price: "1100 ₴" },
+            { name: "Мейн-кун (повний пакет)", price: "1400 ₴" },
+          ],
+        },
+        {
+          id: "extra",
+          icon: "➕",
+          label: "Додаткові послуги",
+          desc: "Послуги à la carte",
+          note: "",
+          rows: [
+            { name: "Стрижка кігтів", price: "200 ₴" },
+            { name: "Чищення вух", price: "150 ₴" },
+            { name: "Розколтунювання", price: "від 250 ₴" },
+            { name: "Чищення зубів (гель)", price: "170 ₴" },
+            { name: "Стрижка мордочки", price: "+200 ₴" },
+            { name: "Купання · до 7 кг", price: "600 ₴" },
+            { name: "Купання · від 7 кг", price: "700+ ₴" },
+            { name: "Купання · від 15–45 кг", price: "900+ ₴" },
+            { name: "Стрижка без купання · Йоркш. тер'єр", price: "700 ₴" },
+            { name: "Стрижка без купання · Бівер йорк. тер'єр", price: "750 ₴" },
+            { name: "Стрижка без купання · Пікінес", price: "700 ₴" },
+            { name: "Стрижка без купання · Болонка", price: "700 ₴" },
+            { name: "Стрижка без купання · Шит-цу", price: "750 ₴" },
+            { name: "Стрижка без купання · Кавалер-чарльз-кінг", price: "750 ₴" },
+            { name: "Стрижка без купання · Спаніель", price: "900 ₴" },
+          ],
+        },
+      ];
+
+      const DEFAULT_SOCIALS = {
+        instagram: "",
+        youtube: "",
+        tiktok: "",
+        viber: "+380989013988",
+        telegram: "https://t.me/dogcare888",
+        tgBotToken: "",
+        tgChatId: "",
+      };
+
+      function migratePricing(p) {
+        // Convert old flat hotel/hotel2/hotel3 format → single hotel with weightTabs
+        const h1 = p.find((g) => g.id === "hotel" && g.rows);
+        const h2 = p.find((g) => g.id === "hotel2");
+        const h3 = p.find((g) => g.id === "hotel3");
+        if (h1 && h2 && h3) {
+          const merged = {
+            id: "hotel",
+            label: "Зооготель",
+            icon: "🏡",
+            desc: "Передержка з прогулянками і доглядом. Ціни залежать від ваги собаки.",
+            weightTabs: [
+              { label: "до 10 кг", rows: h1.rows },
+              { label: "10–25 кг", rows: h2.rows },
+              { label: "від 25 кг", rows: h3.rows },
+            ],
+          };
+          return p
+            .filter((g) => g.id !== "hotel2" && g.id !== "hotel3")
+            .map((g) => (g.id === "hotel" ? merged : g));
+        }
+        return p;
+      }
+
+      function migrateGrooming(g) {
+        // Remove standalone bathing/haircut_only categories (now merged into extra)
+        g = g.filter((c) => c.id !== "bathing" && c.id !== "haircut_only");
+        // Add any missing default categories
+        const existing = new Set(g.map((c) => c.id));
+        DEFAULT_GROOMING.forEach((def) => {
+          if (!existing.has(def.id)) g.push(JSON.parse(JSON.stringify(def)));
+        });
+        return g;
+      }
+
+      const USE_SERVER = window.location.protocol !== "file:";
+
+      function loadFromLocalStorage() {
+        DB.services =
+          JSON.parse(localStorage.getItem("dc_services")) ||
+          JSON.parse(JSON.stringify(DEFAULT_SERVICES));
+        DB.trainers = (
+          JSON.parse(localStorage.getItem("dc_trainers")) ||
+          JSON.parse(JSON.stringify(DEFAULT_TRAINERS))
+        ).map((t) => ({
+          ...t,
+          src: t.src && t.src.length > 200000 ? "" : t.src || "",
+        }));
+        const rawPricing = JSON.parse(localStorage.getItem("dc_pricing"));
+        DB.pricing = rawPricing
+          ? migratePricing(rawPricing)
+          : JSON.parse(JSON.stringify(DEFAULT_PRICING));
+        DB.socials =
+          JSON.parse(localStorage.getItem("dc_socials")) ||
+          JSON.parse(JSON.stringify(DEFAULT_SOCIALS));
+        const rawGrooming = JSON.parse(localStorage.getItem("dc_grooming"));
+        if (rawGrooming) {
+          const migrated = migrateGrooming(rawGrooming);
+          DB.grooming = migrated;
+          localStorage.setItem("dc_grooming", JSON.stringify(migrated));
+        } else {
+          DB.grooming = JSON.parse(JSON.stringify(DEFAULT_GROOMING));
+        }
+        DB.grooming_meta =
+          JSON.parse(localStorage.getItem("dc_grooming_meta")) ||
+          JSON.parse(JSON.stringify(DEFAULT_GROOMING_META));
+      }
+
+      function saveToLocalStorage() {
+        try {
+          localStorage.setItem("dc_services", JSON.stringify(DB.services));
+          localStorage.setItem("dc_trainers", JSON.stringify(DB.trainers));
+          localStorage.setItem("dc_pricing", JSON.stringify(DB.pricing));
+          localStorage.setItem("dc_socials", JSON.stringify(DB.socials));
+          localStorage.setItem("dc_grooming", JSON.stringify(DB.grooming));
+          localStorage.setItem("dc_grooming_meta", JSON.stringify(DB.grooming_meta));
+        } catch (e) {
+          alert("Помилка збереження: " + e.message + "\n\nСпробуй зменшити розмір фото.");
+          throw e;
+        }
+      }
+
+      // ── Firestore-backed storage (works on static hosting, like the gallery) ──
+      const SITE_KEYS = ["services", "trainers", "pricing", "socials", "grooming", "grooming_meta"];
+      function fsContent() {
+        return firebase.firestore().collection("site_content");
+      }
+
+      async function loadDB() {
+        if (!USE_SERVER) {
+          loadFromLocalStorage();
+          return;
+        }
+        const lsGet = (k, def) => {
+          try { return JSON.parse(localStorage.getItem(k)) || def; } catch (e) { return def; }
+        };
+        try {
+          const snaps = await Promise.all(SITE_KEYS.map((k) => fsContent().doc(k).get()));
+          const d = {};
+          snaps.forEach((s, i) => {
+            const v = s.exists ? s.data() : null;
+            if (v && typeof v.json === "string") {
+              try { d[SITE_KEYS[i]] = JSON.parse(v.json); } catch (e) {}
+            }
+          });
+          const cloudEmpty = SITE_KEYS.every((k) => d[k] === undefined);
+
+          DB.services = d.services || lsGet("dc_services", JSON.parse(JSON.stringify(DEFAULT_SERVICES)));
+          DB.trainers = (d.trainers || lsGet("dc_trainers", JSON.parse(JSON.stringify(DEFAULT_TRAINERS)))).map((t) => ({
+            ...t,
+            src: t.src && t.src.length > 200000 ? "" : t.src || "",
+          }));
+          const rawPricing = d.pricing || lsGet("dc_pricing", null);
+          DB.pricing = rawPricing ? migratePricing(rawPricing) : JSON.parse(JSON.stringify(DEFAULT_PRICING));
+          DB.socials = d.socials || lsGet("dc_socials", JSON.parse(JSON.stringify(DEFAULT_SOCIALS)));
+          const rawGrm = d.grooming || lsGet("dc_grooming", null);
+          DB.grooming = rawGrm ? migrateGrooming(rawGrm) : JSON.parse(JSON.stringify(DEFAULT_GROOMING));
+          DB.grooming_meta = d.grooming_meta || lsGet("dc_grooming_meta", JSON.parse(JSON.stringify(DEFAULT_GROOMING_META)));
+
+          saveToLocalStorage();
+          // First run on the cloud: seed Firestore with current local/default data
+          if (cloudEmpty) { try { await saveDB(); } catch (e) {} }
+        } catch (e) {
+          console.error("loadDB Firestore error, falling back to localStorage:", e);
+          loadFromLocalStorage();
+        }
+      }
+
+      async function saveDB() {
+        saveToLocalStorage();
+        if (!USE_SERVER) return;
+        try {
+          const now = firebase.firestore.FieldValue.serverTimestamp();
+          await Promise.all(
+            SITE_KEYS.map((k) =>
+              fsContent().doc(k).set({ json: JSON.stringify(DB[k]), updatedAt: now }),
+            ),
+          );
+        } catch (e) {
+          console.error("saveDB Firestore error:", e);
+          alert(
+            "Не вдалось зберегти у хмару (Firestore): " +
+              e.message +
+              "\n\nПеревір правила безпеки Firestore (потрібен дозвіл на запис).",
+          );
+        }
+      }
+
+      // ═══════════════════ TABS ═══════════════════
+      function showTab(name, btn) {
+        ["services", "team", "pricing", "socials", "grooming"].forEach((t) =>
+          document.getElementById("tab-" + t).classList.add("hidden"),
+        );
+        document.getElementById("tab-" + name).classList.remove("hidden");
+        document
+          .querySelectorAll(".adm-tab")
+          .forEach((b) => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+        if (name === "socials") renderSocials();
+        if (name === "grooming") {
+          renderGrmMeta();
+          renderGrooming();
+          renderGrmPhotos();
+        }
+      }
+
+      function renderSocials() {
+        const s = DB.socials;
+        document.getElementById("sl-instagram").value = s.instagram || "";
+        document.getElementById("sl-youtube").value = s.youtube || "";
+        document.getElementById("sl-tiktok").value = s.tiktok || "";
+        document.getElementById("sl-viber").value = s.viber || "";
+        document.getElementById("sl-telegram").value = s.telegram || "";
+        document.getElementById("sl-tg-bot-token").value = s.tgBotToken || "";
+        document.getElementById("sl-tg-chat-id").value = s.tgChatId || "";
+      }
+
+      function saveSocials() {
+        const viber = document
+          .getElementById("sl-viber")
+          .value.trim()
+          .replace(/\s/g, "");
+        const tg = document.getElementById("sl-telegram").value.trim();
+        DB.socials = {
+          instagram: document.getElementById("sl-instagram").value.trim(),
+          youtube: document.getElementById("sl-youtube").value.trim(),
+          tiktok: document.getElementById("sl-tiktok").value.trim(),
+          viber: viber,
+          telegram: tg.startsWith("http")
+            ? tg
+            : tg
+              ? "https://t.me/" + tg.replace(/^@/, "")
+              : "",
+          tgBotToken: document.getElementById("sl-tg-bot-token").value.trim(),
+          tgChatId: document.getElementById("sl-tg-chat-id").value.trim(),
+        };
+        saveDB();
+        const saved = document.getElementById("socials-saved");
+        saved.classList.add("show");
+        setTimeout(() => saved.classList.remove("show"), 2000);
+        toast("✅ Соцмережі збережено");
+      }
+
+      // ═══════════════════ TOAST ═══════════════════
+      function toast(msg) {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.classList.add("show");
+        setTimeout(() => el.classList.remove("show"), 2500);
+      }
+
+      // ═══════════════════ MODAL ═══════════════════
+      function closeModal(id) {
+        document.getElementById(id).classList.add("hidden");
+      }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeModal("svc-modal");
+          closeModal("team-modal");
+          closeModal("grm-cat-modal");
+        }
+      });
+
+      // ═══════════════════ DYNAMIC ROWS ═══════════════════
+      function addDynRow(containerId, placeholder, value = "") {
+        const cont = document.getElementById(containerId);
+        const row = document.createElement("div");
+        row.className = "dyn-row";
+        row.innerHTML = `<input type="text" placeholder="${placeholder}" value="${escHtml(value)}" /><button class="dyn-del" onclick="this.parentElement.remove()">×</button>`;
+        cont.appendChild(row);
+      }
+      function getDynValues(containerId) {
+        return [
+          ...document.getElementById(containerId).querySelectorAll("input"),
+        ]
+          .map((i) => i.value.trim())
+          .filter(Boolean);
+      }
+      function clearDynList(containerId) {
+        document.getElementById(containerId).innerHTML = "";
+      }
+      function escHtml(s) {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/"/g, "&quot;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      // ═══════════════════ SERVICES ═══════════════════
+      function renderServices() {
+        const grid = document.getElementById("services-grid");
+        if (!DB.services.length) {
+          grid.innerHTML =
+            '<div class="empty"><div class="empty-icon">🦴</div><p>Послуг ще немає. Натисніть «+ Додати послугу».</p></div>';
+          return;
+        }
+        grid.innerHTML = DB.services
+          .map(
+            (s, i) => `
+    <div class="item-card">
+      <div class="ic-head">
+        <div class="ic-icon">${escHtml(s.icon || "🐾")}</div>
+        <div class="ic-info">
+          <div class="ic-title">${escHtml(s.title)}</div>
+          <div class="ic-sub">${escHtml(s.tab)}</div>
+          <div class="ic-price">від ${s.price} ${escHtml(s.unit)}</div>
+        </div>
+      </div>
+      <div class="ic-actions">
+        <button class="btn-edit" onclick="openServiceModal(${i})">✏️ Редагувати</button>
+        <button class="btn-del" onclick="deleteService(${i})">🗑 Видалити</button>
+      </div>
+    </div>`,
+          )
+          .join("");
+      }
+
+      function openServiceModal(idx) {
+        editSvcIdx = idx;
+        const isNew = idx === -1;
+        document.getElementById("svc-modal-title").textContent = isNew
+          ? "Нова послуга"
+          : "Редагувати послугу";
+        const s = isNew
+          ? {
+              icon: "🐾",
+              tab: "",
+              title: "",
+              desc: "",
+              price: "",
+              unit: "₴",
+              features: [],
+              src: "",
+            }
+          : DB.services[idx];
+        document.getElementById("s-icon").value = s.icon || "";
+        document.getElementById("s-tab").value = s.tab || "";
+        document.getElementById("s-title").value = s.title || "";
+        document.getElementById("s-desc").value = s.desc || "";
+        document.getElementById("s-price").value = s.price || "";
+        document.getElementById("s-unit").value = s.unit || "";
+        document.getElementById("s-src").value = s.src || "";
+        clearDynList("s-features");
+        (s.features || []).forEach((f) =>
+          addDynRow("s-features", "Особливість...", f),
+        );
+        document.getElementById("svc-modal").classList.remove("hidden");
+        document.getElementById("s-title").focus();
+      }
+
+      function saveService() {
+        const s = {
+          id:
+            editSvcIdx === -1
+              ? "svc_" + Date.now()
+              : DB.services[editSvcIdx].id,
+          icon: document.getElementById("s-icon").value.trim() || "🐾",
+          tab: document.getElementById("s-tab").value.trim() || "Послуга",
+          title: document.getElementById("s-title").value.trim(),
+          desc: document.getElementById("s-desc").value.trim(),
+          price: parseFloat(document.getElementById("s-price").value) || 0,
+          unit: document.getElementById("s-unit").value.trim() || "₴",
+          src: document.getElementById("s-src").value.trim(),
+          features: getDynValues("s-features"),
+          photo: document.getElementById("s-title").value.trim(),
+        };
+        if (!s.title) {
+          alert("Введіть назву послуги");
+          return;
+        }
+        if (editSvcIdx === -1) DB.services.push(s);
+        else DB.services[editSvcIdx] = s;
+        saveDB();
+        renderServices();
+        closeModal("svc-modal");
+        toast(editSvcIdx === -1 ? "✅ Послугу додано" : "✅ Послугу збережено");
+      }
+
+      function deleteService(idx) {
+        if (!confirm(`Видалити послугу «${DB.services[idx].title}»?`)) return;
+        DB.services.splice(idx, 1);
+        saveDB();
+        renderServices();
+        toast("🗑 Послугу видалено");
+      }
+
+      // ═══════════════════ TEAM ═══════════════════
+      function renderTeam() {
+        const grid = document.getElementById("team-grid");
+        if (!DB.trainers.length) {
+          grid.innerHTML =
+            '<div class="empty"><div class="empty-icon">👥</div><p>Команда ще порожня. Натисніть «+ Додати члена команди».</p></div>';
+          return;
+        }
+        grid.innerHTML = DB.trainers
+          .map((t, i) => {
+            const initials = t.name
+              .split(" ")
+              .map((w) => w[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase();
+            const displaySrc = getDisplaySrc(t);
+            const photoHtml = displaySrc
+              ? `<img class="tc-photo" src="${escHtml(displaySrc)}" alt="${escHtml(t.name)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" /><div class="tc-initials" style="display:none">${escHtml(initials)}</div>`
+              : `<div class="tc-initials">${escHtml(initials)}</div>`;
+            return `
+    <div class="item-card">
+      <div class="ic-head">
+        ${photoHtml}
+        <div class="ic-info">
+          <div class="ic-title">${escHtml(t.name)}</div>
+          <div class="ic-sub">${escHtml(t.role)}</div>
+          <div class="ic-sub">${escHtml(t.spec || "")}</div>
+        </div>
+      </div>
+      <div class="ic-actions">
+        <button class="btn-edit" onclick="openTeamModal(${i})">✏️ Редагувати</button>
+        <button class="btn-del" onclick="deleteTeam(${i})">🗑 Видалити</button>
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      function openTeamModal(idx) {
+        editTeamIdx = idx;
+        const isNew = idx === -1;
+        document.getElementById("team-modal-title").textContent = isNew
+          ? "Новий член команди"
+          : "Редагувати члена команди";
+        const t = isNew
+          ? {
+              name: "",
+              role: "",
+              badge: "",
+              spec: "",
+              src: "",
+              bio: "",
+              education: [],
+              skills: [],
+              stats: { years: 0, dogs: 0, satisf: "100%" },
+              favorite: "",
+              quote: "",
+              languages: [],
+            }
+          : DB.trainers[idx];
+        document.getElementById("t-name").value = t.name || "";
+        document.getElementById("t-role").value = t.role || "";
+        document.getElementById("t-badge").value = t.badge || "";
+        document.getElementById("t-spec").value = t.spec || "";
+        photoChanged = false;
+        currentPhotoBase64 = t.src || ""; // only admin-uploaded photos
+        const prev = document.getElementById("t-photo-preview");
+        const hint = document.getElementById("t-photo-hint");
+        const displaySrc = t.src || getOriginalSrc(t.name) || "";
+        if (displaySrc) {
+          prev.innerHTML = `<img src="${escHtml(displaySrc)}" alt="фото" />`;
+          hint.textContent = "Завантажте нове фото щоб замінити";
+        } else {
+          prev.innerHTML = "👤";
+          hint.textContent = "JPG, PNG, WebP · макс. 5 МБ";
+        }
+        document.getElementById("t-photo-file").value = "";
+        document.getElementById("t-bio").value = t.bio || "";
+        document.getElementById("t-years").value = (t.stats || {}).years || "";
+        document.getElementById("t-dogs").value = (t.stats || {}).dogs || "";
+        document.getElementById("t-satisf").value =
+          (t.stats || {}).satisf || "";
+        document.getElementById("t-fav").value = t.favorite || "";
+        document.getElementById("t-quote").value = t.quote || "";
+        clearDynList("t-skills");
+        (t.skills || []).forEach((s) => addDynRow("t-skills", "Навичка...", s));
+        clearDynList("t-edu");
+        (t.education || []).forEach((e) => addDynRow("t-edu", "Освіта...", e));
+        document.getElementById("team-modal").classList.remove("hidden");
+        document.getElementById("t-name").focus();
+      }
+
+      function saveTeamMember() {
+        const t = {
+          name: document.getElementById("t-name").value.trim(),
+          role: document.getElementById("t-role").value.trim() || "Спеціаліст",
+          badge: document.getElementById("t-badge").value.trim(),
+          spec: document.getElementById("t-spec").value.trim(),
+          src: photoChanged
+            ? currentPhotoBase64
+            : editTeamIdx >= 0
+              ? DB.trainers[editTeamIdx].src || ""
+              : "",
+          bio: document.getElementById("t-bio").value.trim(),
+          stats: {
+            years: parseInt(document.getElementById("t-years").value) || 0,
+            dogs: parseInt(document.getElementById("t-dogs").value) || 0,
+            satisf: document.getElementById("t-satisf").value.trim() || "100%",
+          },
+          favorite: document.getElementById("t-fav").value.trim(),
+          quote: document.getElementById("t-quote").value.trim(),
+          skills: getDynValues("t-skills"),
+          education: getDynValues("t-edu"),
+          languages: ["Українська"],
+          photo: document.getElementById("t-name").value.trim(),
+        };
+        if (!t.name) {
+          alert("Введіть ім'я");
+          return;
+        }
+        if (editTeamIdx === -1) DB.trainers.push(t);
+        else DB.trainers[editTeamIdx] = t;
+        saveDB();
+        renderTeam();
+        closeModal("team-modal");
+        toast(editTeamIdx === -1 ? "✅ Члена команди додано" : "✅ Збережено");
+      }
+
+      function deleteTeam(idx) {
+        if (!confirm(`Видалити «${DB.trainers[idx].name}» з команди?`)) return;
+        DB.trainers.splice(idx, 1);
+        saveDB();
+        renderTeam();
+        toast("🗑 Видалено з команди");
+      }
+
+      // ═══════════════════ GROOMING PHOTOS (Cloudinary + Firestore) ═══════════════════
+      // ↓↓↓ ВСТАВ СВОЇ ДАНІ З CLOUDINARY ↓↓↓
+      const CLOUDINARY_CLOUD_NAME = "dfmxtawwk";
+      const CLOUDINARY_PRESET = "dog_care_unsigned";
+      // ↑↑↑ ───────────────────────────── ↑↑↑
+
+      async function renderGrmPhotos() {
+        const grid = document.getElementById("grm-photo-grid");
+        if (!grid) return;
+        grid.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);font-size:13px">Завантаження...</div>';
+        try {
+          const snap = await firebase.firestore().collection("grm_photos").orderBy("createdAt").get();
+          if (snap.empty) {
+            grid.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);font-size:13px;padding:8px 0">Фото ще немає</div>';
+            return;
+          }
+          grid.innerHTML = snap.docs.map(doc => {
+            const d = doc.data();
+            return `<div style="position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#f0f0f0">
+              <img src="${d.url}" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+              <button onclick="deleteGrmPhoto('${doc.id}','${d.path}')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.55);border:none;color:#fff;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;line-height:1">×</button>
+            </div>`;
+          }).join("");
+        } catch(e) {
+          grid.innerHTML = '<div style="grid-column:1/-1;color:red;font-size:13px">Помилка: ' + e.message + '</div>';
+        }
+      }
+
+      async function grmAddPhotos(input) {
+        const files = [...input.files];
+        if (!files.length) return;
+        toast("⏳ Завантаження фото...");
+        let uploaded = 0;
+        for (const file of files) {
+          if (file.size > 20 * 1024 * 1024) { alert("Файл " + file.name + " занадто великий"); continue; }
+          const objUrl = URL.createObjectURL(file);
+          const img = new Image();
+          img.src = objUrl;
+          await new Promise(r => img.onload = r);
+          const MAX = 1200;
+          let w = img.width, h = img.height;
+          if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+          else { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+          const canvas = document.createElement("canvas");
+          canvas.width = w; canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          URL.revokeObjectURL(objUrl);
+          const blob = await new Promise(r => canvas.toBlob(r, "image/jpeg", 0.82));
+          // → Cloudinary (unsigned upload, без картки)
+          const fd = new FormData();
+          fd.append("file", blob);
+          fd.append("upload_preset", CLOUDINARY_PRESET);
+          const resp = await fetch(
+            "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload",
+            { method: "POST", body: fd }
+          );
+          const data = await resp.json();
+          if (!data.secure_url) {
+            alert("Помилка Cloudinary: " + ((data.error && data.error.message) || "перевір cloud name / назву пресета"));
+            continue;
+          }
+          await firebase.firestore().collection("grm_photos").add({
+            url: data.secure_url,
+            path: data.public_id,
+            name: file.name,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          uploaded++;
+        }
+        input.value = "";
+        await renderGrmPhotos();
+        toast("✅ Додано " + uploaded + " фото");
+      }
+
+      async function deleteGrmPhoto(id, path) {
+        if (!confirm("Видалити фото?")) return;
+        // прибираємо лише запис у Firestore (з сайту фото зникає одразу);
+        // сам файл лишається в Cloudinary — видалити його можна вручну в дашборді Cloudinary
+        await firebase.firestore().collection("grm_photos").doc(id).delete();
+        await renderGrmPhotos();
+        toast("🗑 Фото видалено");
+      }
+
+      // ═══════════════════ GROOMING META ═══════════════════
+      function renderGrmMeta() {
+        const m = DB.grooming_meta;
+        document.getElementById("gm-subtitle").value = m.subtitle || "";
+        document.getElementById("gm-s1num").value =
+          (m.stats[0] || {}).num || "";
+        document.getElementById("gm-s1lbl").value =
+          (m.stats[0] || {}).label || "";
+        document.getElementById("gm-s2num").value =
+          (m.stats[1] || {}).num || "";
+        document.getElementById("gm-s2lbl").value =
+          (m.stats[1] || {}).label || "";
+        document.getElementById("gm-s3num").value =
+          (m.stats[2] || {}).num || "";
+        document.getElementById("gm-s3lbl").value =
+          (m.stats[2] || {}).label || "";
+        document.getElementById("gm-ph1").value = m.phone1 || "";
+        document.getElementById("gm-ph2").value = m.phone2 || "";
+        document.getElementById("gm-ig").value = m.instagram || "";
+        document.getElementById("gm-addr").value = m.address || "";
+      }
+
+      function saveGrmMeta() {
+        DB.grooming_meta = {
+          subtitle: document.getElementById("gm-subtitle").value.trim(),
+          stats: [
+            {
+              num: document.getElementById("gm-s1num").value.trim(),
+              label: document.getElementById("gm-s1lbl").value.trim(),
+            },
+            {
+              num: document.getElementById("gm-s2num").value.trim(),
+              label: document.getElementById("gm-s2lbl").value.trim(),
+            },
+            {
+              num: document.getElementById("gm-s3num").value.trim(),
+              label: document.getElementById("gm-s3lbl").value.trim(),
+            },
+          ],
+          phone1: document.getElementById("gm-ph1").value.trim(),
+          phone2: document.getElementById("gm-ph2").value.trim(),
+          instagram: document.getElementById("gm-ig").value.trim(),
+          address: document.getElementById("gm-addr").value.trim(),
+        };
+        saveDB();
+        const saved = document.getElementById("grm-meta-saved");
+        saved.classList.add("show");
+        setTimeout(() => saved.classList.remove("show"), 2000);
+        toast("✅ Текст сторінки збережено");
+      }
+
+      // ═══════════════════ GROOMING ═══════════════════
+      function renderGrooming() {
+        const list = document.getElementById("grooming-list");
+        if (!DB.grooming.length) {
+          list.innerHTML =
+            '<div class="empty"><div class="empty-icon">✂️</div><p>Категорій ще немає. Натисніть «+ Додати категорію».</p></div>';
+          return;
+        }
+        list.innerHTML = DB.grooming
+          .map(
+            (cat, ci) => `
+    <div class="price-group" id="grm-cat-${ci}">
+      <div class="pg-head" style="justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0">
+          <span class="pg-icon">${escHtml(cat.icon || "✂️")}</span>
+          <div style="min-width:0">
+            <div class="pg-title">${escHtml(cat.label)}</div>
+            <div class="pg-desc">${escHtml(cat.desc || "")}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;margin-left:12px">
+          <button class="btn-edit" style="flex:none;padding:7px 12px" onclick="openGrmCatModal(${ci})">✏️ Ред.</button>
+          <button class="btn-del"  style="flex:none;padding:7px 12px" onclick="deleteGrmCat(${ci})">🗑</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 130px 34px;gap:0;padding:8px 20px 4px;border-bottom:1px solid var(--border)">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Порода / Послуга</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:right;padding-right:8px">Ціна</div>
+        <div></div>
+      </div>
+      <div id="grm-rows-${ci}" style="display:flex;flex-direction:column">
+        ${cat.rows.map((r) => grmRowHtml(r)).join("")}
+      </div>
+      <div style="padding:8px 20px 4px">
+        <button class="btn-dyn-add" onclick="addGrmRow(${ci})">+ Додати запис</button>
+      </div>
+      ${cat.note ? `<div style="background:#fffdf0;border-top:1px solid var(--border);padding:10px 20px 10px;font-size:12.5px;color:var(--muted)">📝 ${escHtml(cat.note)}</div>` : ""}
+      <div style="display:flex;align-items:center;padding:0 0 4px">
+        <button class="pg-save" onclick="saveGrmCategory(${ci}, this)">Зберегти</button>
+        <span class="pg-saved" id="grm-saved-${ci}">✓ Збережено</span>
+      </div>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      function grmRowHtml(r) {
+        const n = escHtml(r.name || "");
+        const p = escHtml(r.price || "");
+        return `<div class="pr-row grm-row" style="display:grid;grid-template-columns:1fr 130px 34px;gap:6px;align-items:center;padding:8px 20px;border-bottom:1px solid var(--border)">
+    <input type="text" class="grm-name" placeholder="Порода або назва..." value="${n}"
+      style="border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-family:inherit;font-size:13px;outline:none;transition:border-color .2s;width:100%"
+      onfocus="this.style.borderColor='var(--dark)'" onblur="this.style.borderColor='var(--border)'" />
+    <input type="text" class="grm-price pr-input" placeholder="500 ₴" value="${p}" style="width:100%;text-align:right" />
+    <button class="dyn-del" style="flex-shrink:0" onclick="this.closest('.grm-row').remove()">×</button>
+  </div>`;
+      }
+
+      function addGrmRow(ci) {
+        const cont = document.getElementById(`grm-rows-${ci}`);
+        const div = document.createElement("div");
+        div.innerHTML = grmRowHtml({ name: "", price: "" });
+        cont.appendChild(div.firstElementChild);
+        cont.querySelector(".grm-row:last-child .grm-name").focus();
+      }
+
+      function saveGrmCategory(ci) {
+        const cont = document.getElementById(`grm-rows-${ci}`);
+        DB.grooming[ci].rows = [...cont.querySelectorAll(".grm-row")]
+          .map((row) => ({
+            name: row.querySelector(".grm-name").value.trim(),
+            price: row.querySelector(".grm-price").value.trim(),
+          }))
+          .filter((r) => r.name || r.price);
+        saveDB();
+        /* Перевіряємо що записалось у localStorage */
+        const check = JSON.parse(localStorage.getItem("dc_grooming"));
+        if (!check) {
+          alert("ПОМИЛКА: дані не збереглись у localStorage!");
+          return;
+        }
+        const saved = document.getElementById(`grm-saved-${ci}`);
+        saved.classList.add("show");
+        setTimeout(() => saved.classList.remove("show"), 2000);
+        toast("✅ Збережено: " + DB.grooming[ci].rows.length + " рядків");
+      }
+
+      function openGrmCatModal(idx) {
+        editGrmCatIdx = idx;
+        const isNew = idx === -1;
+        document.getElementById("grm-cat-title").textContent = isNew
+          ? "Нова категорія"
+          : "Редагувати категорію";
+        const cat = isNew
+          ? { icon: "✂️", label: "", desc: "", note: "" }
+          : DB.grooming[idx];
+        document.getElementById("gc-icon").value = cat.icon || "";
+        document.getElementById("gc-label").value = cat.label || "";
+        document.getElementById("gc-desc").value = cat.desc || "";
+        document.getElementById("gc-note").value = cat.note || "";
+        document.getElementById("grm-cat-modal").classList.remove("hidden");
+        document.getElementById("gc-label").focus();
+      }
+
+      function saveGrmCat() {
+        const label = document.getElementById("gc-label").value.trim();
+        if (!label) {
+          alert("Введіть назву категорії");
+          return;
+        }
+        const cat = {
+          id:
+            editGrmCatIdx === -1
+              ? "grm_" + Date.now()
+              : DB.grooming[editGrmCatIdx].id,
+          icon: document.getElementById("gc-icon").value.trim() || "✂️",
+          label,
+          desc: document.getElementById("gc-desc").value.trim(),
+          note: document.getElementById("gc-note").value.trim(),
+          rows: editGrmCatIdx === -1 ? [] : DB.grooming[editGrmCatIdx].rows,
+        };
+        if (editGrmCatIdx === -1) DB.grooming.push(cat);
+        else DB.grooming[editGrmCatIdx] = cat;
+        saveDB();
+        renderGrooming();
+        closeModal("grm-cat-modal");
+        toast(
+          editGrmCatIdx === -1
+            ? "✅ Категорію додано"
+            : "✅ Категорію збережено",
+        );
+      }
+
+      function deleteGrmCat(ci) {
+        if (!confirm(`Видалити категорію «${DB.grooming[ci].label}»?`)) return;
+        DB.grooming.splice(ci, 1);
+        saveDB();
+        renderGrooming();
+        toast("🗑 Категорію видалено");
+      }
+
+      // ═══════════════════ PRICING ═══════════════════
+      function renderPricingRows(rows, gi, wi) {
+        return rows
+          .map(
+            (r, ri) => `
+    <div class="pr-row">
+      <div>
+        <div class="pr-name">${escHtml(r.service)}</div>
+        ${r.duration ? `<div class="pr-dur">${escHtml(r.duration)}</div>` : ""}
+      </div>
+      <input class="pr-input" type="text" value="${escHtml(r.price)}"
+        data-gi="${gi}" data-wi="${wi !== undefined ? wi : ""}" data-ri="${ri}" placeholder="500 ₴" />
+    </div>`,
+          )
+          .join("");
+      }
+
+      function renderPricing() {
+        const list = document.getElementById("pricing-list");
+        list.innerHTML = DB.pricing
+          .map((g, gi) => {
+            let body = "";
+            if (g.weightTabs) {
+              const tabs = g.weightTabs
+                .map(
+                  (wt, wi) =>
+                    `<button class="pg-wtab${wi === 0 ? " active" : ""}" onclick="switchWeightTab(${gi},${wi})">${escHtml(wt.label)}</button>`,
+                )
+                .join("");
+              const panels = g.weightTabs
+                .map(
+                  (wt, wi) =>
+                    `<div class="pg-wtab-panel${wi === 0 ? "" : " hidden"}" id="pg-wp-${gi}-${wi}">${renderPricingRows(wt.rows, gi, wi)}</div>`,
+                )
+                .join("");
+              body = `<div class="pg-wtabs">${tabs}</div>${panels}`;
+            } else {
+              body = renderPricingRows(g.rows || [], gi, undefined);
+            }
+            return `
+      <div class="price-group">
+        <div class="pg-head">
+          <span class="pg-icon">${escHtml(g.icon || "💰")}</span>
+          <div>
+            <div class="pg-title">${escHtml(g.label)}</div>
+            <div class="pg-desc">${escHtml(g.desc || "")}</div>
+          </div>
+        </div>
+        ${body}
+        <div style="display:flex;align-items:center;margin-top:12px">
+          <button class="pg-save" onclick="savePricingGroup(${gi}, this)">Зберегти ціни</button>
+          <span class="pg-saved" id="pg-saved-${gi}">✓ Збережено</span>
+        </div>
+      </div>`;
+          })
+          .join("");
+      }
+
+      function switchWeightTab(gi, wi) {
+        const group = document.querySelectorAll(".price-group")[gi];
+        group
+          .querySelectorAll(".pg-wtab")
+          .forEach((b, i) => b.classList.toggle("active", i === wi));
+        group
+          .querySelectorAll(".pg-wtab-panel")
+          .forEach((p, i) => p.classList.toggle("hidden", i !== wi));
+      }
+
+      function savePricingGroup(gi, btn) {
+        document
+          .querySelectorAll(`.pr-input[data-gi="${gi}"]`)
+          .forEach((inp) => {
+            const ri = parseInt(inp.dataset.ri);
+            const wi =
+              inp.dataset.wi !== "" ? parseInt(inp.dataset.wi) : undefined;
+            if (wi !== undefined) {
+              DB.pricing[gi].weightTabs[wi].rows[ri].price = inp.value.trim();
+            } else {
+              DB.pricing[gi].rows[ri].price = inp.value.trim();
+            }
+          });
+        saveDB();
+        const saved = document.getElementById(`pg-saved-${gi}`);
+        saved.classList.add("show");
+        setTimeout(() => saved.classList.remove("show"), 2000);
+        toast("✅ Ціни збережено");
+      }
+
+      // ═══════════════════ PHOTO UPLOAD ═══════════════════
+      function handlePhotoUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        if (file.size > 20 * 1024 * 1024) {
+          alert("Файл занадто великий. Максимум 20 МБ.");
+          input.value = "";
+          return;
+        }
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        img.onload = function () {
+          // Compress to max 600px, JPEG 80% — keeps photos under ~80KB
+          const MAX = 600;
+          let w = img.width,
+            h = img.height;
+          if (w > h) {
+            if (w > MAX) {
+              h = Math.round((h * MAX) / w);
+              w = MAX;
+            }
+          } else {
+            if (h > MAX) {
+              w = Math.round((w * MAX) / h);
+              h = MAX;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+          currentPhotoBase64 = canvas.toDataURL("image/jpeg", 0.8);
+          photoChanged = true;
+          URL.revokeObjectURL(url);
+          document.getElementById("t-photo-preview").innerHTML =
+            `<img src="${currentPhotoBase64}" alt="фото" />`;
+          document.getElementById("t-photo-hint").textContent = "✓ Фото готове";
+        };
+        img.src = url;
+      }
+
+      // ═══════════════════ INIT ═══════════════════
+      async function initDashboard() {
+        await loadDB();
+        renderServices();
+        renderTeam();
+        renderPricing();
+        renderGrmMeta();
+        renderGrooming();
+        renderGrmPhotos();
+      }
+
+      // Auto-login if session active
+      if (checkAuth()) {
+        document.getElementById("login-screen").classList.add("hidden");
+        document.getElementById("dashboard").classList.add("visible");
+        initDashboard();
+      }
+    </script>
+
+  </body>
+</html>

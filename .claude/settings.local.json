@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /tmp/design-extract)",
+      "Read(//tmp/**)",
+      "Bash(tar -xzf \"/Users/vitalii/.claude/projects/-Users-vitalii-Desktop-Dog-care--Remix---Remix-/7e552c78-2208-4686-add9-386af548d128/tool-results/webfetch-1779509502064-vmche1.bin\")",
+      "Bash(find /tmp/design-extract -type f | head -50 && echo \"---\" && find /tmp/design-extract -type d)",
+      "Bash(npm install *)",
+      "Bash(which node; which npm; which yarn; which pnpm; echo \"PATH=$PATH\"; ls /opt/homebrew/bin/ 2>/dev/null | grep -iE 'node|npm|yarn|pnpm|fnm|nvm' | head; ls /usr/local/bin/ 2>/dev/null | grep -iE 'node|npm|yarn|pnpm|fnm|nvm' | head)",
+      "Read(//Users/vitalii/.nvm/versions/**)",
+      "Read(//Users/vitalii/.fnm/**)",
+      "Read(//Users/vitalii/.local/**)",
+      "Read(//Users/vitalii/**)",
+      "Bash(mdfind -name 'node.exe')",
+      "Bash(mdfind 'kMDItemFSName==\"node\"')",
+      "Bash(open \"/Users/vitalii/Desktop/Dog care \\(Remix\\) \\(Remix\\)/Dog Care - standalone.html\")",
+      "Bash(cp /Users/vitalii/Desktop/logo.svg \"/Users/vitalii/Desktop/Dog care \\(Remix\\) \\(Remix\\)/logo.svg\" && ls -la \"/Users/vitalii/Desktop/Dog care \\(Remix\\) \\(Remix\\)/logo.svg\")",
+      "Bash(python3)",
+      "WebFetch(domain:www.youtube.com)",
+      "Bash(curl -s -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36\" \"https://www.youtube.com/@dogcare888\")",
+      "Bash(grep -oE '\\(\"externalId\"|\"browseId\"|<link rel=\"canonical\"\\)[^,>]{0,80}')",
+      "Bash(curl -s \"https://www.youtube.com/feeds/videos.xml?channel_id=UCzWnlLO2V7VG7B5D_ce-ZnA\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s -I \"https://www.youtube.com/channel/UCzWnlLO2V7VG7B5D_ce-ZnA\")",
+      "Bash(curl -s -A \"Mozilla/5.0\" \"https://www.youtube.com/channel/UCzWnlLO2V7VG7B5D_ce-ZnA/videos\")",
+      "Bash(curl -s -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36\" \"https://www.youtube.com/channel/UCzWnlLO2V7VG7B5D_ce-ZnA/videos\")",
+      "Bash(xargs ls -lt)",
+      "mcp__360b799d-85e6-4608-93b4-6dcccad20f45__get_design_context",
+      "Bash(curl -s -o /tmp/figma-full.png \"https://www.figma.com/api/mcp/asset/a270a616-b4c7-4a47-9597-193600cd7de8\")"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+node_modules
+.DS_Store
+.cache
+.env
+build
+.vite
+
+# Large source video (exceeds GitHub 100MB limit, not used on site)
+dog header.mov
+*.mov

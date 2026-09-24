@@ -846,9 +846,6 @@
           />
         </div>
         <button class="btn-login" onclick="doLogin()">Увійти</button>
-        <p class="login-hint">
-          Логін: <strong>admin</strong> · Пароль: <strong>dogcare2024</strong>
-        </p>
       </div>
     </div>
 
@@ -1455,7 +1452,11 @@
 
     <script>
       // ═══════════════════ AUTH ═══════════════════
-      const CREDS = { user: "admin", pass: "dogcare2024" };
+      // Client-side gate only — anyone reading page source can see this,
+      // it's not real authentication. Set your own value before deploying;
+      // the previous password ("dogcare2024") already leaked via git history
+      // and must be treated as compromised.
+      const CREDS = { user: "admin", pass: "SET-YOUR-OWN-PASSWORD-HERE" };
 
       function checkAuth() {
         return sessionStorage.getItem("dc_admin") === "1";

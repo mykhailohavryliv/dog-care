@@ -1,0 +1,6 @@
+{
+  "name": "dog-care-telegram-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Serverless proxy that holds the Telegram bot token server-side so it never ships to the browser."
+}

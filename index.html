@@ -4701,6 +4701,10 @@
     <script type="text/babel" data-presets="react">
       // Dog Care — shared components
       const { useState, useEffect, useRef } = React;
+      // Serverless proxy that holds the Telegram bot token server-side.
+      // See telegram-proxy/README.md — replace after deploying it on Vercel.
+      const TELEGRAM_PROXY_URL =
+        "https://YOUR-VERCEL-PROJECT.vercel.app/api/send-telegram";
 
       /* Paw print SVG */
       function PawPrint({ size = 32, color, rotate = 0, style = {} }) {
@@ -6494,8 +6498,6 @@
           setErrors({});
           setSending(true);
           try {
-            const tgToken = "8960301998:AAF6-JiLZ-qsB_GlVC3QbFldlQKvkMQ_ezo";
-            const tgChatId = "8613591177";
             const text = [
               "🐾 <b>Нова заявка — Dog Care</b>",
               "",
@@ -6505,14 +6507,10 @@
               `📋 <b>Послуга:</b> ${data.service}`,
               `💬 <b>Повідомлення:</b> ${data.message || "—"}`,
             ].join("\n");
-            await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+            await fetch(TELEGRAM_PROXY_URL, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                chat_id: tgChatId,
-                text,
-                parse_mode: "HTML",
-              }),
+              body: JSON.stringify({ text, parseMode: "HTML" }),
             });
           } catch (err) {
             console.error("Telegram error:", err);
@@ -6962,8 +6960,6 @@
           setErrors({});
           setSending(true);
           try {
-            const tgToken = "8960301998:AAF6-JiLZ-qsB_GlVC3QbFldlQKvkMQ_ezo";
-            const tgChatId = "8613591177";
             const text = [
               "🐾 <b>Нова заявка — Dog Care</b>",
               "",
@@ -6973,14 +6969,10 @@
               `📋 <b>Послуга:</b> ${data.service}`,
               `💬 <b>Повідомлення:</b> ${data.message || "—"}`,
             ].join("\n");
-            await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+            await fetch(TELEGRAM_PROXY_URL, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                chat_id: tgChatId,
-                text,
-                parse_mode: "HTML",
-              }),
+              body: JSON.stringify({ text, parseMode: "HTML" }),
             });
           } catch (err) {
             console.error(err);

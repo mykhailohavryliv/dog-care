@@ -5557,6 +5557,11 @@
     </script>
 
     <script>
+      /* Serverless proxy that holds the Telegram bot token server-side.
+         See telegram-proxy/README.md — replace after deploying it on Vercel. */
+      const TELEGRAM_PROXY_URL =
+        "https://YOUR-VERCEL-PROJECT.vercel.app/api/send-telegram";
+
       /* ── Sync з адмінки (localStorage) ── */
       (function () {
         const EXTRA_ICONS = [
@@ -6339,9 +6344,6 @@
             return;
           }
 
-          var token = "8960301998:AAF6-JiLZ-qsB_GlVC3QbFldlQKvkMQ_ezo";
-          var chatId = "8613591177";
-
           var name = document.getElementById("bk-name").value.trim();
           var phone = document.getElementById("bk-phone").value.trim();
           var pet = document.getElementById("bk-pet").value;
@@ -6388,35 +6390,21 @@
           btnText.textContent = "Надсилаємо…";
           btn.disabled = true;
 
-          if (!token || !chatId) {
-            btnText.textContent = "Надіслати заявку";
-            btn.disabled = false;
-            errEl.textContent =
-              "Telegram-бот не налаштований. Перейдіть в адмінку → Соцмережі та вкажіть Bot Token і Chat ID.";
-            errEl.style.display = "block";
-            return;
-          }
-
           try {
-            var res = await fetch(
-              "https://api.telegram.org/bot" + token + "/sendMessage",
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_id: chatId, text: text }),
-              },
-            );
+            var res = await fetch(TELEGRAM_PROXY_URL, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text: text }),
+            });
             var data = await res.json();
-            if (!res.ok) throw new Error(data.description || "Помилка API");
+            if (!res.ok) throw new Error(data.error || "Помилка API");
             bkShowSuccess();
           } catch (err) {
             console.error("Telegram sendMessage error:", err);
             btnText.textContent = "Надіслати заявку";
             btn.disabled = false;
             errEl.textContent =
-              "Не вдалося надіслати: " +
-              (err.message || "невідома помилка") +
-              ". Перевірте Bot Token та Chat ID в адмінці.";
+              "Не вдалося надіслати: " + (err.message || "невідома помилка");
             errEl.style.display = "block";
           }
         }

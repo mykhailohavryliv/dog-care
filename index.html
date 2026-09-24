@@ -4702,9 +4702,8 @@
       // Dog Care — shared components
       const { useState, useEffect, useRef } = React;
       // Serverless proxy that holds the Telegram bot token server-side.
-      // See telegram-proxy/README.md — replace after deploying it on Vercel.
-      const TELEGRAM_PROXY_URL =
-        "https://YOUR-VERCEL-PROJECT.vercel.app/api/send-telegram";
+      // Same-origin: this page and /api are one Vercel deployment.
+      const TELEGRAM_PROXY_URL = "/api/send-telegram";
 
       /* Paw print SVG */
       function PawPrint({ size = 32, color, rotate = 0, style = {} }) {

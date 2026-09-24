@@ -1,26 +1,11 @@
-// Vercel serverless function.
-// Deploy this folder as its own Vercel project (root directory = telegram-proxy).
-// Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID as encrypted env vars in the
-// Vercel project settings — never commit real values here.
-
-const ALLOWED_ORIGINS = new Set([
-  "https://mr-sempai.github.io",
-  "http://localhost:3000",
-  "http://127.0.0.1:5500",
-]);
-
-function setCors(req, res) {
-  const origin = req.headers.origin;
-  if (origin && ALLOWED_ORIGINS.has(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-  res.setHeader("Vary", "Origin");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-}
+// Vercel serverless function, served at /api/send-telegram from this same
+// project (the whole repo — static pages + this function — deploys as one
+// Vercel project). Set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID as encrypted
+// env vars in the Vercel project settings — never commit real values here.
 
 module.exports = async function handler(req, res) {
-  setCors(req, res);
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
   if (req.method === "OPTIONS") {
     res.status(204).end();

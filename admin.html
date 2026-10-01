@@ -786,6 +786,7 @@
     </style>
   <!-- Firebase SDK (завантажується першим) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <script>
@@ -826,13 +827,13 @@
         </div>
         <h1>Адмін панель</h1>
         <p>Dog Care · Управління контентом</p>
-        <div class="login-err" id="login-err">Невірний логін або пароль</div>
+        <div class="login-err" id="login-err">Невірний email або пароль</div>
         <div class="fg">
-          <label>Логін</label>
+          <label>Email</label>
           <input
-            type="text"
+            type="email"
             id="inp-user"
-            placeholder="admin"
+            placeholder="admin@example.com"
             autocomplete="username"
           />
         </div>
@@ -1452,29 +1453,31 @@
 
     <script>
       // ═══════════════════ AUTH ═══════════════════
-      // Client-side gate only — anyone reading page source can see this,
-      // it's not real authentication. Set your own value before deploying;
-      // the previous password ("dogcare2024") already leaked via git history
-      // and must be treated as compromised.
-      const CREDS = { user: "admin", pass: "SET-YOUR-OWN-PASSWORD-HERE" };
-
-      function checkAuth() {
-        return sessionStorage.getItem("dc_admin") === "1";
-      }
-      function doLogin() {
-        const u = document.getElementById("inp-user").value.trim();
-        const p = document.getElementById("inp-pass").value;
-        if (u === CREDS.user && p === CREDS.pass) {
-          sessionStorage.setItem("dc_admin", "1");
-          document.getElementById("login-screen").classList.add("hidden");
-          document.getElementById("dashboard").classList.add("visible");
-          initDashboard();
-        } else {
-          document.getElementById("login-err").classList.add("show");
+      // Firebase Authentication (email + password). The login screen only
+      // decides what the UI shows — what actually protects the data are the
+      // Firestore security rules (see firestore.rules), which allow writes
+      // only for the admin account's UID.
+      async function doLogin() {
+        const email = document.getElementById("inp-user").value.trim();
+        const pass = document.getElementById("inp-pass").value;
+        const err = document.getElementById("login-err");
+        err.classList.remove("show");
+        try {
+          await firebase.auth().signInWithEmailAndPassword(email, pass);
+          // onAuthStateChanged below opens the dashboard
+        } catch (e) {
+          console.error("Login error:", e);
+          err.textContent =
+            e.code === "auth/too-many-requests"
+              ? "Забагато спроб. Спробуйте пізніше."
+              : e.code === "auth/network-request-failed"
+                ? "Немає з'єднання з сервером."
+                : "Невірний email або пароль";
+          err.classList.add("show");
         }
       }
-      function doLogout() {
-        sessionStorage.removeItem("dc_admin");
+      async function doLogout() {
+        await firebase.auth().signOut();
         location.reload();
       }
       document.getElementById("inp-pass").addEventListener("keydown", (e) => {
@@ -2771,12 +2774,16 @@
         renderGrmPhotos();
       }
 
-      // Auto-login if session active
-      if (checkAuth()) {
+      // Show the dashboard once Firebase confirms a signed-in user
+      // (also restores the session after a page reload)
+      let dashboardStarted = false;
+      firebase.auth().onAuthStateChanged((user) => {
+        if (!user || dashboardStarted) return;
+        dashboardStarted = true;
         document.getElementById("login-screen").classList.add("hidden");
         document.getElementById("dashboard").classList.add("visible");
         initDashboard();
-      }
+      });
     </script>
 
   </body>

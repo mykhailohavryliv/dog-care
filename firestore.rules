@@ -1,0 +1,30 @@
+rules_version = '2';
+
+// Firestore security rules for project dog-care-9aef2.
+// Paste into Firebase Console → Firestore Database → Rules → Publish.
+// Replace ADMIN_UID with the UID of the admin account
+// (Firebase Console → Authentication → Users → "User UID" column).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == "ADMIN_UID";
+    }
+
+    // Editable site content (services, trainers, pricing, socials, grooming, grooming_meta)
+    match /site_content/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Grooming gallery photos
+    match /grm_photos/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Everything else is closed
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

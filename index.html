@@ -1851,7 +1851,10 @@
           margin-right: -18px;
           padding-left: 18px;
           padding-right: 18px;
-          padding-bottom: 4px;
+          padding-top: 12px;
+          padding-bottom: 56px;
+          margin-top: 36px;
+          margin-bottom: -44px;
           -webkit-mask-image: linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
           mask-image: linear-gradient(to right, transparent, black 18px, black calc(100% - 18px), transparent);
         }
@@ -2692,6 +2695,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: center top;
       }
       .dc-modal-photo-tag {
         position: absolute;
@@ -3948,8 +3952,9 @@
           grid-template-columns: 1fr;
         }
         .dc-modal-photo {
-          min-height: 280px;
-          aspect-ratio: 4/3;
+          min-height: 0;
+          aspect-ratio: 4/5;
+          max-height: 70vh;
         }
         .dc-modal-body {
           padding: 28px 24px;
@@ -5678,7 +5683,7 @@
         }, [trainer]);
         if (!trainer) return null;
         const t = trainer;
-        return (
+        return ReactDOM.createPortal(
           <div className="dc-modal-overlay" onClick={onClose}>
             <div className="dc-modal" onClick={(e) => e.stopPropagation()}>
               <button
@@ -5793,7 +5798,8 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div>,
+          document.body,
         );
       }
 

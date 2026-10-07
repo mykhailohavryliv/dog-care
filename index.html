@@ -3277,7 +3277,7 @@
       }
       .pkg-grid {
         display: grid;
-        grid-template-columns: minmax(280px, 360px) 1fr;
+        grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
         gap: 56px;
         align-items: start;
       }
@@ -3348,7 +3348,7 @@
           box-shadow 0.35s ease;
       }
       .pkg-card:hover {
-        transform: translateY(-6px) scale(1.01);
+        transform: translateY(-6px);
         box-shadow: 0 42px 90px rgba(26, 24, 20, 0.16);
       }
       .pkg-card-top {
@@ -3448,6 +3448,8 @@
       }
       .pkg-rows .nm {
         color: var(--ink-2);
+        min-width: 0;
+        flex: 1;
       }
       .pkg-rows .nm em {
         display: block;
@@ -3463,6 +3465,7 @@
         color: var(--ink);
         white-space: nowrap;
         text-align: right;
+        flex-shrink: 0;
       }
       .pkg-rows .pr em {
         display: block;
@@ -3521,7 +3524,7 @@
       }
       @media (max-width: 900px) {
         .pkg-grid {
-          grid-template-columns: 1fr;
+          grid-template-columns: minmax(0, 1fr);
           gap: 26px;
         }
         .pkg-left {

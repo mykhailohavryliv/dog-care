@@ -55,10 +55,18 @@ This is the part that isn't obvious from reading any single file:
   `services`, `trainers`, `pricing`, `socials`, `grooming`, `grooming_meta` (see `SITE_KEYS` in
   `admin.html`).
 - `admin.html` reads/writes these docs (`fsContent().doc(key)...`) after signing in with Firebase
-  Authentication (email/password, `firebase.auth().onAuthStateChanged` opens the dashboard). The
-  login UI is not the security boundary — `firestore.rules` is: public read, writes only for the
-  admin UID. Those rules live in this repo for reference but are deployed by pasting them into the
-  Firebase Console (there's no `firebase.json`/CLI setup).
+  Authentication (email/password). The login UI is not the security boundary — `firestore.rules`
+  is: public read, writes only for users that have a doc in `admins/{uid}`. Those rules live in
+  this repo for reference but are deployed by pasting them into the Firebase Console (there's no
+  `firebase.json`/CLI setup).
+- Admin accounts are managed in `admin.html` itself, never by editing UIDs in the rules. While
+  `meta/setup` doesn't exist the login screen is a sign-up form: the first user creates
+  `admins/{own uid}` + `meta/setup` in one batch (an existing Auth account can claim it by signing
+  in). The «Адміни» tab lets any admin add more: a new email gets an Auth account created on a
+  secondary Firebase app (so the current admin stays signed in) plus a password-reset email; an
+  email that already has an account gets an `admin_invites/{email}` doc that its owner claims on
+  login once the email is verified. Removing an admin deletes only the `admins` doc (the Auth
+  account stays; delete it in the console if needed). Admins can't remove themselves.
 - `index.html` and `grooming.html` read the same Firestore docs at page load (`firebase.firestore()
   .collection("site_content").doc(<key>).get()`) to hydrate content that an admin edited, falling
   back to `localStorage` (`dc_services`, `dc_trainers`, `dc_pricing`, `dc_socials`, `dc_grooming`,

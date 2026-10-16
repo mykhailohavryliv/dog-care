@@ -1451,6 +1451,7 @@
     <!-- Toast -->
     <div class="toast" id="toast"></div>
 
+    <script src="assets/js/site-content.js"></script>
     <script>
       // ═══════════════════ AUTH ═══════════════════
       // Firebase Authentication (email + password). The login screen only
@@ -1488,251 +1489,10 @@
       });
 
       // ═══════════════════ DEFAULT DATA ═══════════════════
-      const DEFAULT_SERVICES = [
-        {
-          id: "kinology",
-          icon: "🦴",
-          tab: "Тренування",
-          title: "Школа тренувань для собак",
-          desc: "Загальний курс кінології та курс охорони. Навчаємо будувати стосунки з вашим улюбленцем без криків, стресу та страху.",
-          features: [
-            "У школі — 350 ₴/год",
-            "На виїзд — 700 ₴/год",
-            "Загальний курс",
-            "Курс охорони",
-            "12 занять/міс",
-            "Для учнів — тренування безкошт.",
-          ],
-          price: 350,
-          unit: "₴ / година",
-          src: "https://images.unsplash.com/photo-1587764379873-97837921fd44?w=900&q=80",
-        },
-        {
-          id: "grooming",
-          icon: "✂️",
-          tab: "Грумінг",
-          title: "Грумінг із любов'ю до породи",
-          desc: "Стрижки, тримінг, гігієна, SPA. Працюємо тільки гіпоалергенною косметикою преміум‑класу — і ніколи не на крик.",
-          features: [
-            "Породна стрижка",
-            "Гігієнічна обрізка",
-            "Тримінг жорсткошерстих",
-            "SPA з пілінгом",
-            "Експрес‑линька",
-            "Перукарська проба",
-          ],
-          price: 500,
-          unit: "₴ / сеанс",
-          src: "https://images.unsplash.com/photo-1591946614720-90a587da4a36?w=900&q=80",
-        },
-        {
-          id: "hotel",
-          icon: "🏡",
-          tab: "Зооготель",
-          title: "Зооготель і зоосадок",
-          desc: "Не клітки, а справжні кімнати з ліжечками і прогулянковим двором. Підтримка 24/7, регулярні вигули та звіти власникам.",
-          features: [
-            "Зоосадок — від 230 ₴/день",
-            "Зооготель — від 550 ₴/доба",
-            "Абонемент 30 днів",
-            "Регулярні вигули",
-            "Контроль здоров'я",
-            "Щоденні фотозвіти",
-          ],
-          price: 230,
-          unit: "₴ / день",
-          src: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=900&q=80",
-        },
-        {
-          id: "nanny",
-          icon: "🚶",
-          tab: "Зооняня",
-          title: "Зооняня — вигул і догляд",
-          desc: "Зооняня приїжджає до вас додому та забирає песика на прогулянку. Песик закриває усі свої потреби, грається, повторює команди і тренується.",
-          features: [
-            "Один вигул — 400 ₴",
-            "Подвійний — 600 ₴",
-            "Тренування в процесі",
-            "Ментальні ігри",
-            "Фізична активність",
-            "Офіційний договір",
-          ],
-          price: 400,
-          unit: "₴ / вигул",
-          src: "https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=900&q=80",
-        },
-      ];
-
-      const DEFAULT_TRAINERS = [
-        {
-          name: "Маївський Павло",
-          role: "Кінолог‑інструктор",
-          badge: "~300 собак",
-          spec: "Дресирування з 2016",
-          src: "",
-          bio: "З дитинства захоплювався собаками. У 2014 р. закінчив аграрний коледж за спеціальністю «ветеринарія». У 2014–2016 рр. — молодший кінолог‑інструктор ТОВ «Секюрайті». З 2016 року займається дресируванням собак — вивчив близько 300 вихованців.",
-          education: [
-            "Аграрний коледж — ветеринарія, 2014",
-            "ТОВ «Секюрайті» — кінолог‑інструктор, 2014–16",
-            "Практика 3 роки у ветклініці «Олвет»",
-          ],
-          skills: [
-            "Базовий курс",
-            "Захисно‑караульна служба",
-            "Корекція поведінки",
-            "Робота з великими породами",
-          ],
-          stats: { years: 10, dogs: 300, satisf: "100%" },
-          favorite: "Німецький вівчар",
-          quote: "Собаки слухають, але тих, хто вміє говорити.",
-          languages: ["Українська"],
-        },
-        {
-          name: "Попадюк Тарас",
-          role: "Кінолог, ветфельдшер",
-          badge: "ЛНУВМ",
-          spec: "Спільна мова з кожною",
-          src: "",
-          bio: "Тварини для нього все. Закінчив Рогатинський коледж та Львівський університет за фахом «ветеринарна медицина». 2 роки працював у ветклініці. З 2022 р. займається дресируванням.",
-          education: [
-            "Рогатинський коледж — ветмедицина",
-            "Львівський національний університет ветмедицини",
-            "Дресирування собак з 2022",
-          ],
-          skills: [
-            "Щенята",
-            "Соціалізація",
-            "Перша ветдопомога",
-            "Праця з нервовими собаками",
-          ],
-          stats: { years: 4, dogs: 220, satisf: "99%" },
-          favorite: "Лабрадор",
-          quote: "Знайду спільну мову з кожною собакою.",
-          languages: ["Українська"],
-        },
-        {
-          name: "Плещинська Вероніка",
-          role: "Зоопсихолог, кінолог",
-          badge: "Вроцлав",
-          spec: "Корекція поведінки",
-          src: "",
-          bio: "Закінчила курси зоопсихології у м. Вроцлав (Польща). Працювала в собачому притулку та займалася консультаціями, допомагаючи людям виправляти поведінку собак вдома. З 2021 р. — службова кінологія.",
-          education: [
-            "Курси зоопсихології, Вроцлав, Польща",
-            "Робота в собачому притулку",
-            "Службова кінологія з 2021",
-          ],
-          skills: [
-            "Реактивність на поводку",
-            "Страхи та фобії",
-            "Консультації вдома",
-            "Робота з притульними",
-          ],
-          stats: { years: 5, dogs: 180, satisf: "98%" },
-          favorite: "Безпородні врятовані",
-          quote: "Якщо ваша собака робить все, що їй заманеться — є рішення.",
-          languages: ["Українська", "Польська"],
-        },
-      ];
-
-      const DEFAULT_PRICING = [
-        {
-          id: "consult",
-          label: "Консультації",
-          icon: "💬",
-          desc: "Індивідуальні консультації з кінологом.",
-          rows: [
-            { service: "У школі", duration: "1 година", price: "700 ₴" },
-            {
-              service: "На виїзд",
-              duration: "1 година",
-              price: "~900 ₴",
-              note: "без пального",
-            },
-          ],
-        },
-        {
-          id: "group",
-          label: "Групові заняття",
-          icon: "🐾",
-          desc: "Заняття у міні‑групі.",
-          rows: [
-            {
-              service: "1 раз на тиждень · 1 год · школа",
-              duration: "1 заняття",
-              price: "350 ₴",
-            },
-          ],
-          footnote: "Для діючих учнів школи DOG CARE тренування безкоштовні.",
-        },
-        {
-          id: "nanny",
-          label: "Зооняня",
-          icon: "🚶",
-          desc: "Вигул, ментальні ігри, фізична активність.",
-          rows: [
-            { service: "Один вигул", duration: "1 година", price: "400 ₴" },
-            {
-              service: "Подвійний вигул",
-              duration: "2 години",
-              price: "600 ₴",
-            },
-          ],
-        },
-        {
-          id: "courses",
-          label: "Курси кінології",
-          icon: "🎓",
-          desc: "Повноцінні курси дресирування.",
-          rows: [
-            {
-              service: "Загальний курс",
-              duration: "мін. 3–4 міс · 12 занять/міс",
-              price: "180 €/міс",
-            },
-            {
-              service: "Курс охорони",
-              duration: "1–2 міс · 12 занять/міс",
-              price: "230 €/міс",
-            },
-          ],
-        },
-        {
-          id: "hotel",
-          label: "Зооготель",
-          icon: "🏡",
-          desc: "Передержка з прогулянками і доглядом. Ціни залежать від ваги собаки.",
-          weightTabs: [
-            {
-              label: "до 10 кг",
-              rows: [
-                { service: "1 година", price: "230 ₴" },
-                { service: "Зоосадок · день", price: "550 ₴" },
-                { service: "Зооготель · доба", price: "650 ₴" },
-                { service: "Абонемент 30 днів", price: "17 550 ₴" },
-              ],
-            },
-            {
-              label: "10–25 кг",
-              rows: [
-                { service: "1 година", price: "280 ₴" },
-                { service: "Зоосадок · день", price: "650 ₴" },
-                { service: "Зооготель · доба", price: "750 ₴" },
-                { service: "Абонемент 30 днів", price: "20 250 ₴" },
-              ],
-            },
-            {
-              label: "від 25 кг",
-              rows: [
-                { service: "1 година", price: "330 ₴" },
-                { service: "Зоосадок · день", price: "750 ₴" },
-                { service: "Зооготель · доба", price: "850 ₴" },
-                { service: "Абонемент 30 днів", price: "22 950 ₴" },
-              ],
-            },
-          ],
-        },
-      ];
+      // Shared with index.html — see assets/js/site-content.js
+      const DEFAULT_SERVICES = DCContent.defaults("services");
+      const DEFAULT_TRAINERS = DCContent.defaults("trainers");
+      const DEFAULT_PRICING = DCContent.defaults("pricing");
 
       // ═══════════════════ STATE ═══════════════════
       let DB = {
@@ -1745,23 +1505,13 @@
       let editSvcIdx = -1;
       let editTeamIdx = -1;
       let editGrmCatIdx = -1;
-      let currentPhotoBase64 = "";
+      let currentPhotoSrc = "";
       let photoChanged = false;
+      let photoUploading = false;
 
-      function getOriginalSrc(name) {
-        try {
-          // Read directly from site tab (no localStorage size limit)
-          const origs =
-            (window.opener && window.opener.__trainers_originals__) || [];
-          const found = origs.find((t) => t.name === name);
-          if (found && found.src) return found.src;
-        } catch (e) {}
-        return "";
-      }
-
-      // For display only — never stored in localStorage
       function getDisplaySrc(t) {
-        return t.src || getOriginalSrc(t.name) || "";
+        const def = DEFAULT_TRAINERS.find((d) => d.name === t.name);
+        return t.src || (def && def.src) || "";
       }
 
       const DEFAULT_GROOMING_META = {
@@ -1912,20 +1662,11 @@
       const USE_SERVER = window.location.protocol !== "file:";
 
       function loadFromLocalStorage() {
-        DB.services =
-          JSON.parse(localStorage.getItem("dc_services")) ||
-          JSON.parse(JSON.stringify(DEFAULT_SERVICES));
-        DB.trainers = (
-          JSON.parse(localStorage.getItem("dc_trainers")) ||
-          JSON.parse(JSON.stringify(DEFAULT_TRAINERS))
-        ).map((t) => ({
-          ...t,
-          src: t.src && t.src.length > 200000 ? "" : t.src || "",
-        }));
+        const lsSchema = parseInt(localStorage.getItem("dc_content_schema")) || 0;
+        DB.services = DCContent.merge("services", JSON.parse(localStorage.getItem("dc_services")), lsSchema);
+        DB.trainers = DCContent.merge("trainers", JSON.parse(localStorage.getItem("dc_trainers")), lsSchema);
         const rawPricing = JSON.parse(localStorage.getItem("dc_pricing"));
-        DB.pricing = rawPricing
-          ? migratePricing(rawPricing)
-          : JSON.parse(JSON.stringify(DEFAULT_PRICING));
+        DB.pricing = DCContent.merge("pricing", rawPricing && migratePricing(rawPricing), lsSchema);
         DB.socials =
           JSON.parse(localStorage.getItem("dc_socials")) ||
           JSON.parse(JSON.stringify(DEFAULT_SOCIALS));
@@ -1950,6 +1691,7 @@
           localStorage.setItem("dc_socials", JSON.stringify(DB.socials));
           localStorage.setItem("dc_grooming", JSON.stringify(DB.grooming));
           localStorage.setItem("dc_grooming_meta", JSON.stringify(DB.grooming_meta));
+          localStorage.setItem("dc_content_schema", String(DCContent.SCHEMA));
         } catch (e) {
           alert("Помилка збереження: " + e.message + "\n\nСпробуй зменшити розмір фото.");
           throw e;
@@ -1973,21 +1715,31 @@
         try {
           const snaps = await Promise.all(SITE_KEYS.map((k) => fsContent().doc(k).get()));
           const d = {};
+          const schema = {};
           snaps.forEach((s, i) => {
             const v = s.exists ? s.data() : null;
             if (v && typeof v.json === "string") {
-              try { d[SITE_KEYS[i]] = JSON.parse(v.json); } catch (e) {}
+              try {
+                d[SITE_KEYS[i]] = JSON.parse(v.json);
+                schema[SITE_KEYS[i]] = v.schema;
+              } catch (e) {}
             }
           });
           const cloudEmpty = SITE_KEYS.every((k) => d[k] === undefined);
+          const lsSchema = parseInt(localStorage.getItem("dc_content_schema")) || 0;
+          // Firestore doc if present, else localStorage cache; merged with the shared defaults
+          const content = (k, lsKey, prep = (x) => x) => {
+            const raw = d[k] !== undefined ? d[k] : lsGet(lsKey, null);
+            return DCContent.merge(k, raw && prep(raw), d[k] !== undefined ? schema[k] : lsSchema);
+          };
+          // Docs written before the shared defaults existed get migrated once and saved back
+          const cloudOutdated = ["services", "trainers", "pricing"].some(
+            (k) => d[k] !== undefined && !(schema[k] >= DCContent.SCHEMA),
+          );
 
-          DB.services = d.services || lsGet("dc_services", JSON.parse(JSON.stringify(DEFAULT_SERVICES)));
-          DB.trainers = (d.trainers || lsGet("dc_trainers", JSON.parse(JSON.stringify(DEFAULT_TRAINERS)))).map((t) => ({
-            ...t,
-            src: t.src && t.src.length > 200000 ? "" : t.src || "",
-          }));
-          const rawPricing = d.pricing || lsGet("dc_pricing", null);
-          DB.pricing = rawPricing ? migratePricing(rawPricing) : JSON.parse(JSON.stringify(DEFAULT_PRICING));
+          DB.services = content("services", "dc_services");
+          DB.trainers = content("trainers", "dc_trainers");
+          DB.pricing = content("pricing", "dc_pricing", migratePricing);
           DB.socials = d.socials || lsGet("dc_socials", JSON.parse(JSON.stringify(DEFAULT_SOCIALS)));
           const rawGrm = d.grooming || lsGet("dc_grooming", null);
           DB.grooming = rawGrm ? migrateGrooming(rawGrm) : JSON.parse(JSON.stringify(DEFAULT_GROOMING));
@@ -1995,7 +1747,7 @@
 
           saveToLocalStorage();
           // First run on the cloud: seed Firestore with current local/default data
-          if (cloudEmpty) { try { await saveDB(); } catch (e) {} }
+          if (cloudEmpty || cloudOutdated) { try { await saveDB(); } catch (e) {} }
         } catch (e) {
           console.error("loadDB Firestore error, falling back to localStorage:", e);
           loadFromLocalStorage();
@@ -2009,7 +1761,7 @@
           const now = firebase.firestore.FieldValue.serverTimestamp();
           await Promise.all(
             SITE_KEYS.map((k) =>
-              fsContent().doc(k).set({ json: JSON.stringify(DB[k]), updatedAt: now }),
+              fsContent().doc(k).set({ json: JSON.stringify(DB[k]), schema: DCContent.SCHEMA, updatedAt: now }),
             ),
           );
         } catch (e) {
@@ -2187,6 +1939,8 @@
 
       function saveService() {
         const s = {
+          // keep fields the form doesn't edit (e.g. `photo` alt text)
+          ...(editSvcIdx === -1 ? {} : DB.services[editSvcIdx]),
           id:
             editSvcIdx === -1
               ? "svc_" + Date.now()
@@ -2287,10 +2041,10 @@
         document.getElementById("t-badge").value = t.badge || "";
         document.getElementById("t-spec").value = t.spec || "";
         photoChanged = false;
-        currentPhotoBase64 = t.src || ""; // only admin-uploaded photos
+        currentPhotoSrc = t.src || "";
         const prev = document.getElementById("t-photo-preview");
         const hint = document.getElementById("t-photo-hint");
-        const displaySrc = t.src || getOriginalSrc(t.name) || "";
+        const displaySrc = getDisplaySrc(t);
         if (displaySrc) {
           prev.innerHTML = `<img src="${escHtml(displaySrc)}" alt="фото" />`;
           hint.textContent = "Завантажте нове фото щоб замінити";
@@ -2315,16 +2069,20 @@
       }
 
       function saveTeamMember() {
+        if (photoUploading) {
+          alert("Зачекайте, фото ще завантажується");
+          return;
+        }
+        const prev = editTeamIdx >= 0 ? DB.trainers[editTeamIdx] : {};
         const t = {
+          // keep fields the form doesn't edit (e.g. `languages`)
+          languages: ["Українська"],
+          ...prev,
           name: document.getElementById("t-name").value.trim(),
           role: document.getElementById("t-role").value.trim() || "Спеціаліст",
           badge: document.getElementById("t-badge").value.trim(),
           spec: document.getElementById("t-spec").value.trim(),
-          src: photoChanged
-            ? currentPhotoBase64
-            : editTeamIdx >= 0
-              ? DB.trainers[editTeamIdx].src || ""
-              : "",
+          src: photoChanged ? currentPhotoSrc : prev.src || "",
           bio: document.getElementById("t-bio").value.trim(),
           stats: {
             years: parseInt(document.getElementById("t-years").value) || 0,
@@ -2335,7 +2093,6 @@
           quote: document.getElementById("t-quote").value.trim(),
           skills: getDynValues("t-skills"),
           education: getDynValues("t-edu"),
-          languages: ["Українська"],
           photo: document.getElementById("t-name").value.trim(),
         };
         if (!t.name) {
@@ -2393,30 +2150,11 @@
         let uploaded = 0;
         for (const file of files) {
           if (file.size > 20 * 1024 * 1024) { alert("Файл " + file.name + " занадто великий"); continue; }
-          const objUrl = URL.createObjectURL(file);
-          const img = new Image();
-          img.src = objUrl;
-          await new Promise(r => img.onload = r);
-          const MAX = 1200;
-          let w = img.width, h = img.height;
-          if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
-          else { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
-          const canvas = document.createElement("canvas");
-          canvas.width = w; canvas.height = h;
-          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-          URL.revokeObjectURL(objUrl);
-          const blob = await new Promise(r => canvas.toBlob(r, "image/jpeg", 0.82));
-          // → Cloudinary (unsigned upload, без картки)
-          const fd = new FormData();
-          fd.append("file", blob);
-          fd.append("upload_preset", CLOUDINARY_PRESET);
-          const resp = await fetch(
-            "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload",
-            { method: "POST", body: fd }
-          );
-          const data = await resp.json();
-          if (!data.secure_url) {
-            alert("Помилка Cloudinary: " + ((data.error && data.error.message) || "перевір cloud name / назву пресета"));
+          let data;
+          try {
+            data = await uploadToCloudinary(await resizeToJpeg(file, 1200, 0.82));
+          } catch (e) {
+            alert(e.message);
             continue;
           }
           await firebase.firestore().collection("grm_photos").add({
@@ -2723,7 +2461,39 @@
       }
 
       // ═══════════════════ PHOTO UPLOAD ═══════════════════
-      function handlePhotoUpload(input) {
+      // Downscale + re-encode in the browser before upload
+      async function resizeToJpeg(file, max, quality) {
+        const objUrl = URL.createObjectURL(file);
+        const img = new Image();
+        img.src = objUrl;
+        await new Promise((r, j) => { img.onload = r; img.onerror = () => j(new Error("Не вдалось прочитати файл " + file.name)); });
+        let w = img.width, h = img.height;
+        if (w > h) { if (w > max) { h = Math.round(h * max / w); w = max; } }
+        else { if (h > max) { w = Math.round(w * max / h); h = max; } }
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(objUrl);
+        return new Promise((r) => canvas.toBlob(r, "image/jpeg", quality));
+      }
+
+      // → Cloudinary (unsigned upload preset); resolves to { secure_url, public_id, ... }
+      async function uploadToCloudinary(blob) {
+        const fd = new FormData();
+        fd.append("file", blob);
+        fd.append("upload_preset", CLOUDINARY_PRESET);
+        const resp = await fetch(
+          "https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD_NAME + "/image/upload",
+          { method: "POST", body: fd }
+        );
+        const data = await resp.json();
+        if (!data.secure_url)
+          throw new Error("Помилка Cloudinary: " + ((data.error && data.error.message) || "перевір cloud name / назву пресета"));
+        return data;
+      }
+
+      // Trainer photo: stored in Firestore as a Cloudinary URL (not base64)
+      async function handlePhotoUpload(input) {
         const file = input.files[0];
         if (!file) return;
         if (file.size > 20 * 1024 * 1024) {
@@ -2731,36 +2501,23 @@
           input.value = "";
           return;
         }
-        const img = new Image();
-        const url = URL.createObjectURL(file);
-        img.onload = function () {
-          // Compress to max 600px, JPEG 80% — keeps photos under ~80KB
-          const MAX = 600;
-          let w = img.width,
-            h = img.height;
-          if (w > h) {
-            if (w > MAX) {
-              h = Math.round((h * MAX) / w);
-              w = MAX;
-            }
-          } else {
-            if (h > MAX) {
-              w = Math.round((w * MAX) / h);
-              h = MAX;
-            }
-          }
-          const canvas = document.createElement("canvas");
-          canvas.width = w;
-          canvas.height = h;
-          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-          currentPhotoBase64 = canvas.toDataURL("image/jpeg", 0.8);
+        const hint = document.getElementById("t-photo-hint");
+        photoUploading = true;
+        hint.textContent = "⏳ Завантаження фото...";
+        try {
+          const data = await uploadToCloudinary(await resizeToJpeg(file, 1000, 0.82));
+          currentPhotoSrc = data.secure_url;
           photoChanged = true;
-          URL.revokeObjectURL(url);
           document.getElementById("t-photo-preview").innerHTML =
-            `<img src="${currentPhotoBase64}" alt="фото" />`;
-          document.getElementById("t-photo-hint").textContent = "✓ Фото готове";
-        };
-        img.src = url;
+            `<img src="${escHtml(currentPhotoSrc)}" alt="фото" />`;
+          hint.textContent = "✓ Фото завантажено";
+        } catch (e) {
+          alert(e.message);
+          hint.textContent = "Не вдалось завантажити фото";
+        } finally {
+          photoUploading = false;
+          input.value = "";
+        }
       }
 
       // ═══════════════════ INIT ═══════════════════

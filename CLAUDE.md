@@ -63,8 +63,19 @@ This is the part that isn't obvious from reading any single file:
   .collection("site_content").doc(<key>).get()`) to hydrate content that an admin edited, falling
   back to `localStorage` (`dc_services`, `dc_trainers`, `dc_pricing`, `dc_socials`, `dc_grooming`,
   `dc_grooming_meta`) and then to hardcoded defaults if Firestore is unavailable/empty.
-- Grooming gallery photos are a separate Firestore collection, `grm_photos` (add/delete/list ordered
-  by `createdAt`), independent of the `site_content` docs.
+- `services`, `trainers` and `pricing` defaults live in one place, `assets/js/site-content.js`
+  (`window.DCContent`), loaded as a plain script by both `index.html` and `admin.html`.
+  `DCContent.merge(kind, saved, schema)` is the single merge rule: saved items keep their order and
+  membership, missing fields and an empty `src` fall back to the matching default (by `id`, or by
+  `name` for trainers). Docs carry a `schema` number next to `json`; anything older than
+  `DCContent.SCHEMA` gets a one-time legacy migration (old admin seed values replaced, dropped
+  default items restored) and `admin.html` writes it back on load. Bump `SCHEMA` and extend the
+  migration if the saved shape changes. `index.html` renders from the `localStorage` cache first,
+  then re-renders once the Firestore docs arrive.
+- Trainer photos and grooming gallery photos are uploaded from `admin.html` to Cloudinary
+  (unsigned preset, `uploadToCloudinary`), and only the URL is stored in Firestore — no base64.
+  Gallery photos are a separate Firestore collection, `grm_photos` (add/delete/list ordered by
+  `createdAt`), independent of the `site_content` docs.
 - Firebase project id is `dog-care-9aef2`; the config object (apiKey etc.) is intentionally public
   client config — that's expected for Firebase web apps and is not a secret by itself, but Firestore
   security rules (`firestore.rules`) are what actually gate writes.

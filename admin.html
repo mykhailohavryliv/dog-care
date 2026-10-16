@@ -135,6 +135,39 @@
       .login-err.show {
         display: block;
       }
+      .login-info {
+        background: var(--bg);
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-size: 13px;
+        line-height: 1.45;
+        margin-bottom: 14px;
+        text-align: left;
+      }
+      .btn-link {
+        background: none;
+        border: none;
+        padding: 0;
+        margin-top: 14px;
+        font-family: inherit;
+        font-size: 13px;
+        color: var(--muted);
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      .btn-link:hover {
+        color: var(--dark);
+      }
+      .admin-you {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 1px 8px;
+        border-radius: 99px;
+        background: var(--yellow);
+        color: var(--dark);
+        font-size: 11px;
+        font-weight: 700;
+      }
       .login-hint {
         font-size: 12px;
         color: var(--muted);
@@ -825,9 +858,18 @@
             />
           </svg>
         </div>
-        <h1>Адмін панель</h1>
-        <p>Dog Care · Управління контентом</p>
+        <h1 id="login-title">Адмін панель</h1>
+        <p id="login-sub">Dog Care · Управління контентом</p>
         <div class="login-err" id="login-err">Невірний email або пароль</div>
+        <div class="login-info hidden" id="login-info"></div>
+        <!-- signed in, but not an admin (or invite waiting for email verification) -->
+        <div id="login-noaccess" class="hidden">
+          <button class="btn-login hidden" id="btn-verify" onclick="sendVerifyEmail()">
+            Надіслати лист підтвердження
+          </button>
+          <button class="btn-link" onclick="doLogout()">Увійти з іншим акаунтом</button>
+        </div>
+        <div id="login-form">
         <div class="fg">
           <label>Email</label>
           <input
@@ -846,7 +888,18 @@
             autocomplete="current-password"
           />
         </div>
-        <button class="btn-login" onclick="doLogin()">Увійти</button>
+        <div class="fg hidden" id="fg-pass2">
+          <label>Повторіть пароль</label>
+          <input
+            type="password"
+            id="inp-pass2"
+            placeholder="••••••••"
+            autocomplete="new-password"
+          />
+        </div>
+        <button class="btn-login" id="btn-login" onclick="submitAuth()">Увійти</button>
+        <button class="btn-link" id="btn-forgot" onclick="forgotPassword()">Забули пароль?</button>
+        </div>
       </div>
     </div>
 
@@ -891,6 +944,9 @@
         <button class="adm-tab" onclick="showTab('grooming', this)">
           ✂️ Грумінг
         </button>
+        <button class="adm-tab" onclick="showTab('admins', this)">
+          🔐 Адміни
+        </button>
       </nav>
 
       <div class="adm-body">
@@ -932,6 +988,29 @@
               </div>
             </div>
             <div id="pricing-list"></div>
+          </div>
+
+          <!-- ── ADMINS ── -->
+          <div id="tab-admins" class="hidden">
+            <div class="sec-header">
+              <div>
+                <h2>Адміністратори</h2>
+                <p>Хто може входити в цю панель і змінювати сайт</p>
+              </div>
+            </div>
+            <div class="item-card" style="max-width: 600px; margin-bottom: 20px; gap: 0">
+              <div class="fg">
+                <label>Email нового адміна</label>
+                <input id="adm-new-email" type="email" placeholder="name@example.com" />
+              </div>
+              <button class="btn-add" id="btn-add-admin" onclick="addAdmin()">
+                + Додати адміна
+              </button>
+              <div class="ic-sub" style="margin-top: 10px">
+                На цю адресу прийде лист із посиланням для встановлення пароля.
+              </div>
+            </div>
+            <div class="items-grid" id="admins-grid"></div>
           </div>
 
           <!-- ── SOCIALS ── -->
@@ -1456,37 +1535,190 @@
       // ═══════════════════ AUTH ═══════════════════
       // Firebase Authentication (email + password). The login screen only
       // decides what the UI shows — what actually protects the data are the
-      // Firestore security rules (see firestore.rules), which allow writes
-      // only for the admin account's UID.
+      // Firestore security rules (see firestore.rules): writes are allowed only
+      // for users that have a doc in /admins/{uid}. Until the first admin has
+      // registered (/meta/setup missing) the login screen is a sign-up form.
+      firebase.auth().languageCode = "uk";
+      const adminsCol = () => firebase.firestore().collection("admins");
+      const invitesCol = () => firebase.firestore().collection("admin_invites");
+      const setupDoc = () => firebase.firestore().collection("meta").doc("setup");
+      let authMode = "login"; // "login" | "setup"
+      let authBusy = false; // sign-up in progress — onAuthStateChanged must wait
+
+      function authErrorText(e) {
+        switch (e && e.code) {
+          case "auth/invalid-credential":
+          case "auth/invalid-login-credentials":
+          case "auth/wrong-password":
+          case "auth/user-not-found":
+            return "Невірний email або пароль";
+          case "auth/invalid-email":
+            return "Невірний формат email";
+          case "auth/weak-password":
+            return "Пароль має містити щонайменше 6 символів";
+          case "auth/too-many-requests":
+            return "Забагато спроб. Спробуйте пізніше.";
+          case "auth/network-request-failed":
+            return "Немає з'єднання з сервером.";
+          case "permission-denied":
+            return "Немає доступу. Можливо, адміністратора вже зареєстровано.";
+          default:
+            return (e && e.message) || "Помилка";
+        }
+      }
+      function showLoginError(msg) {
+        const err = document.getElementById("login-err");
+        err.textContent = msg;
+        err.classList.toggle("show", !!msg);
+      }
+      function showLoginInfo(msg) {
+        const el = document.getElementById("login-info");
+        el.textContent = msg || "";
+        el.classList.toggle("hidden", !msg);
+      }
+
+      function setAuthMode(mode) {
+        authMode = mode;
+        const setup = mode === "setup";
+        document.getElementById("login-form").classList.remove("hidden");
+        document.getElementById("login-noaccess").classList.add("hidden");
+        document.getElementById("fg-pass2").classList.toggle("hidden", !setup);
+        document.getElementById("btn-forgot").classList.toggle("hidden", setup);
+        document.getElementById("login-title").textContent = setup ? "Реєстрація адміна" : "Адмін панель";
+        document.getElementById("login-sub").textContent = setup
+          ? "Адміністратора ще немає — створіть перший акаунт"
+          : "Dog Care · Управління контентом";
+        document.getElementById("btn-login").textContent = setup ? "Зареєструватися" : "Увійти";
+        document.getElementById("inp-pass").autocomplete = setup ? "new-password" : "current-password";
+      }
+
+      async function detectAuthMode() {
+        try {
+          setAuthMode((await setupDoc().get()).exists ? "login" : "setup");
+        } catch (e) {
+          setAuthMode("login"); // e.g. old rules that don't expose /meta/setup
+        }
+      }
+
+      function submitAuth() {
+        return authMode === "setup" ? doRegister() : doLogin();
+      }
+
       async function doLogin() {
         const email = document.getElementById("inp-user").value.trim();
         const pass = document.getElementById("inp-pass").value;
-        const err = document.getElementById("login-err");
-        err.classList.remove("show");
+        showLoginError("");
+        showLoginInfo("");
         try {
           await firebase.auth().signInWithEmailAndPassword(email, pass);
-          // onAuthStateChanged below opens the dashboard
+          // onAuthStateChanged below checks admin rights and opens the dashboard
         } catch (e) {
           console.error("Login error:", e);
-          err.textContent =
-            e.code === "auth/too-many-requests"
-              ? "Забагато спроб. Спробуйте пізніше."
-              : e.code === "auth/network-request-failed"
-                ? "Немає з'єднання з сервером."
-                : "Невірний email або пароль";
-          err.classList.add("show");
+          showLoginError(authErrorText(e));
         }
       }
+
+      // First admin: create (or sign in to) the account, then claim /meta/setup
+      async function doRegister() {
+        const email = document.getElementById("inp-user").value.trim();
+        const pass = document.getElementById("inp-pass").value;
+        const pass2 = document.getElementById("inp-pass2").value;
+        showLoginError("");
+        if (pass.length < 6) return showLoginError("Пароль має містити щонайменше 6 символів");
+        if (pass !== pass2) return showLoginError("Паролі не збігаються");
+        authBusy = true;
+        try {
+          const auth = firebase.auth();
+          let cred;
+          try {
+            cred = await auth.createUserWithEmailAndPassword(email, pass);
+          } catch (e) {
+            if (e.code !== "auth/email-already-in-use") throw e;
+            cred = await auth.signInWithEmailAndPassword(email, pass);
+          }
+          const user = cred.user;
+          const now = firebase.firestore.FieldValue.serverTimestamp();
+          const batch = firebase.firestore().batch();
+          batch.set(adminsCol().doc(user.uid), { email: user.email, addedBy: "", createdAt: now });
+          batch.set(setupDoc(), { by: user.uid, createdAt: now });
+          await batch.commit();
+          openDashboard(user);
+        } catch (e) {
+          console.error("Register error:", e);
+          showLoginError(authErrorText(e));
+          if (firebase.auth().currentUser) await firebase.auth().signOut();
+          await detectAuthMode();
+        } finally {
+          authBusy = false;
+        }
+      }
+
+      async function forgotPassword() {
+        const email = document.getElementById("inp-user").value.trim();
+        showLoginError("");
+        if (!email) return showLoginError("Введіть email, і ми надішлемо посилання для зміни пароля");
+        try {
+          await firebase.auth().sendPasswordResetEmail(email);
+          showLoginInfo("Якщо акаунт з таким email існує, на нього надіслано лист для зміни пароля.");
+        } catch (e) {
+          showLoginError(authErrorText(e));
+        }
+      }
+
+      // An existing account that another admin invited becomes admin on login
+      async function claimInvite(user) {
+        const email = (user.email || "").toLowerCase();
+        if (!email) return "none";
+        const inv = await invitesCol().doc(email).get();
+        if (!inv.exists) return "none";
+        if (!user.emailVerified) {
+          await user.reload();
+          if (!firebase.auth().currentUser.emailVerified) return "unverified";
+        }
+        await user.getIdToken(true); // make the rules see email_verified
+        const batch = firebase.firestore().batch();
+        batch.set(adminsCol().doc(user.uid), {
+          email,
+          addedBy: inv.data().addedBy || "",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        batch.delete(inv.ref);
+        await batch.commit();
+        return "claimed";
+      }
+
+      function showNoAccess(user, reason) {
+        document.getElementById("login-form").classList.add("hidden");
+        document.getElementById("login-noaccess").classList.remove("hidden");
+        document.getElementById("btn-verify").classList.toggle("hidden", reason !== "unverified");
+        document.getElementById("login-title").textContent = "Немає доступу";
+        document.getElementById("login-sub").textContent = user.email || "";
+        showLoginError("");
+        showLoginInfo(
+          reason === "unverified"
+            ? "Вас запрошено адміністратором. Підтвердіть email: натисніть кнопку нижче, відкрийте посилання з листа і поверніться на цю сторінку."
+            : "Цей акаунт не має прав адміністратора. Попросіть когось із адмінів додати ваш email у вкладці «Адміни».",
+        );
+      }
+
+      async function sendVerifyEmail() {
+        try {
+          await firebase.auth().currentUser.sendEmailVerification();
+          showLoginInfo("Лист надіслано. Після підтвердження оновіть цю сторінку.");
+        } catch (e) {
+          showLoginError(authErrorText(e));
+        }
+      }
+
       async function doLogout() {
         await firebase.auth().signOut();
         location.reload();
       }
-      document.getElementById("inp-pass").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") doLogin();
-      });
-      document.getElementById("inp-user").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") doLogin();
-      });
+      ["inp-user", "inp-pass", "inp-pass2"].forEach((id) =>
+        document.getElementById(id).addEventListener("keydown", (e) => {
+          if (e.key === "Enter") submitAuth();
+        }),
+      );
 
       // ═══════════════════ DEFAULT DATA ═══════════════════
       // Shared with index.html — see assets/js/site-content.js
@@ -1776,7 +2008,7 @@
 
       // ═══════════════════ TABS ═══════════════════
       function showTab(name, btn) {
-        ["services", "team", "pricing", "socials", "grooming"].forEach((t) =>
+        ["services", "team", "pricing", "socials", "grooming", "admins"].forEach((t) =>
           document.getElementById("tab-" + t).classList.add("hidden"),
         );
         document.getElementById("tab-" + name).classList.remove("hidden");
@@ -1785,6 +2017,7 @@
           .forEach((b) => b.classList.remove("active"));
         if (btn) btn.classList.add("active");
         if (name === "socials") renderSocials();
+        if (name === "admins") renderAdmins();
         if (name === "grooming") {
           renderGrmMeta();
           renderGrooming();
@@ -2520,6 +2753,122 @@
         }
       }
 
+      // ═══════════════════ ADMINS ═══════════════════
+      async function renderAdmins() {
+        const grid = document.getElementById("admins-grid");
+        grid.innerHTML = '<div style="grid-column:1/-1;color:var(--muted);font-size:13px">Завантаження...</div>';
+        const me = firebase.auth().currentUser;
+        try {
+          const [admins, invites] = await Promise.all([adminsCol().get(), invitesCol().get()]);
+          const fmt = (ts) => (ts && ts.toDate ? ts.toDate().toLocaleDateString("uk-UA") : "");
+          const cards = admins.docs.map((doc) => {
+            const d = doc.data();
+            const isMe = me && doc.id === me.uid;
+            const sub = [d.addedBy ? "додав(ла) " + d.addedBy : "перший адмін", fmt(d.createdAt)]
+              .filter(Boolean)
+              .join(" · ");
+            return `<div class="item-card">
+      <div class="ic-head">
+        <div class="ic-icon">🔐</div>
+        <div class="ic-info">
+          <div class="ic-title">${escHtml(d.email)}${isMe ? '<span class="admin-you">це ви</span>' : ""}</div>
+          <div class="ic-sub">${escHtml(sub)}</div>
+        </div>
+      </div>
+      ${isMe ? "" : `<div class="ic-actions"><button class="btn-del" onclick="removeAdmin('${doc.id}')">🗑 Прибрати доступ</button></div>`}
+    </div>`;
+          });
+          invites.docs.forEach((doc) => {
+            const d = doc.data();
+            cards.push(`<div class="item-card">
+      <div class="ic-head">
+        <div class="ic-icon">✉️</div>
+        <div class="ic-info">
+          <div class="ic-title">${escHtml(d.email)}</div>
+          <div class="ic-sub">Запрошення · стане адміном після першого входу</div>
+        </div>
+      </div>
+      <div class="ic-actions"><button class="btn-del" data-email="${escHtml(doc.id)}" onclick="removeInvite(this.dataset.email)">✕ Скасувати</button></div>
+    </div>`);
+          });
+          grid.innerHTML = cards.join("");
+        } catch (e) {
+          grid.innerHTML =
+            '<div style="grid-column:1/-1;color:red;font-size:13px">Помилка: ' +
+            escHtml(e.message) +
+            (e.code === "permission-denied" ? " — опублікуйте нові правила з firestore.rules у Firebase Console." : "") +
+            "</div>";
+        }
+      }
+
+      function randomPassword() {
+        const bytes = crypto.getRandomValues(new Uint8Array(24));
+        return btoa(String.fromCharCode(...bytes));
+      }
+
+      // Creates the account on a secondary Firebase app (so the current admin stays signed in)
+      // with a random password, then sends a password-reset email so the new admin sets their own.
+      async function addAdmin() {
+        const input = document.getElementById("adm-new-email");
+        const btn = document.getElementById("btn-add-admin");
+        const email = input.value.trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Введіть коректний email");
+        const me = firebase.auth().currentUser;
+        btn.disabled = true;
+        const tmp = firebase.initializeApp(firebase.app().options, "add-admin-" + Date.now());
+        try {
+          const existing = await adminsCol().where("email", "==", email).get();
+          if (!existing.empty) return alert("Цей email вже є адміністратором");
+          const tmpAuth = tmp.auth();
+          await tmpAuth.setPersistence(firebase.auth.Auth.Persistence.NONE);
+          let uid = null;
+          try {
+            uid = (await tmpAuth.createUserWithEmailAndPassword(email, randomPassword())).user.uid;
+          } catch (e) {
+            if (e.code !== "auth/email-already-in-use") throw e;
+          }
+          const data = {
+            email,
+            addedBy: me.email || "",
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          };
+          // New account → admin right away; existing account → invite it claims on login
+          if (uid) await adminsCol().doc(uid).set(data);
+          else await invitesCol().doc(email).set(data);
+          await firebase.auth().sendPasswordResetEmail(email);
+          input.value = "";
+          toast("✅ Адміна додано, лист надіслано на " + email);
+          renderAdmins();
+        } catch (e) {
+          console.error("addAdmin error:", e);
+          alert("Не вдалось додати адміна: " + authErrorText(e));
+        } finally {
+          btn.disabled = false;
+          tmp.delete().catch(() => {});
+        }
+      }
+
+      async function removeAdmin(uid) {
+        if (!confirm("Прибрати доступ до адмін-панелі для цього акаунта?")) return;
+        try {
+          await adminsCol().doc(uid).delete();
+          toast("🗑 Доступ прибрано");
+        } catch (e) {
+          alert("Помилка: " + authErrorText(e));
+        }
+        renderAdmins();
+      }
+
+      async function removeInvite(email) {
+        try {
+          await invitesCol().doc(email).delete();
+          toast("🗑 Запрошення скасовано");
+        } catch (e) {
+          alert("Помилка: " + authErrorText(e));
+        }
+        renderAdmins();
+      }
+
       // ═══════════════════ INIT ═══════════════════
       async function initDashboard() {
         await loadDB();
@@ -2531,15 +2880,32 @@
         renderGrmPhotos();
       }
 
-      // Show the dashboard once Firebase confirms a signed-in user
-      // (also restores the session after a page reload)
       let dashboardStarted = false;
-      firebase.auth().onAuthStateChanged((user) => {
-        if (!user || dashboardStarted) return;
+      function openDashboard() {
+        if (dashboardStarted) return;
         dashboardStarted = true;
         document.getElementById("login-screen").classList.add("hidden");
         document.getElementById("dashboard").classList.add("visible");
         initDashboard();
+      }
+
+      // Runs on login and on page load with a restored session: open the
+      // dashboard only for admins (or claim a pending invite)
+      firebase.auth().onAuthStateChanged(async (user) => {
+        if (authBusy || dashboardStarted) return;
+        if (!user) return detectAuthMode();
+        try {
+          if ((await adminsCol().doc(user.uid).get()).exists) return openDashboard();
+          const invite = await claimInvite(user);
+          if (invite === "claimed") return openDashboard();
+          showNoAccess(user, invite);
+        } catch (e) {
+          // Rules published before the admins collection existed don't allow reading it —
+          // keep working as before; Firestore still decides who can write.
+          if (e.code === "permission-denied") return openDashboard();
+          console.error("Admin check error:", e);
+          showLoginError(authErrorText(e));
+        }
       });
     </script>
 

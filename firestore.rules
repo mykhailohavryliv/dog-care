@@ -2,12 +2,32 @@ rules_version = '2';
 
 // Firestore security rules for project dog-care-9aef2.
 // Paste into Firebase Console → Firestore Database → Rules → Publish.
-// Replace ADMIN_UID with the UID of the admin account
-// (Firebase Console → Authentication → Users → "User UID" column).
+//
+// Admins are the Firebase Auth users that have a doc in /admins/{uid}; they are managed from
+// admin.html (tab «Адміни»), nobody needs to edit UIDs here.
+// - First admin: while /meta/setup doesn't exist, admin.html shows a registration form; the first
+//   user to register creates /admins/{own uid} and /meta/setup in one batch, which closes it.
+//   Register right after publishing these rules — until then anyone could claim it.
+// - More admins: an admin creates /admins/{uid} for a new account directly, or, if an account
+//   with that email already exists, an invite /admin_invites/{email} that its owner claims on
+//   login (requires a verified email, so nobody can pre-register someone else's address).
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
     function isAdmin() {
-      return request.auth != null && request.auth.uid == "ADMIN_UID";
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function setupDone() {
+      return exists(/databases/$(database)/documents/meta/setup);
+    }
+    function myEmail() {
+      return request.auth.token.email;
+    }
+    function validAdminDoc() {
+      return request.resource.data.keys().hasOnly(["email", "addedBy", "createdAt"])
+        && request.resource.data.email is string;
     }
 
     // Editable site content (services, trainers, pricing, socials, grooming, grooming_meta)
@@ -20,6 +40,42 @@ service cloud.firestore {
     match /grm_photos/{doc} {
       allow read: if true;
       allow write: if isAdmin();
+    }
+
+    match /admins/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && validAdminDoc() && (
+        isAdmin()
+        // first admin, in the same batch that creates /meta/setup
+        || (request.auth.uid == uid
+            && request.resource.data.email == myEmail()
+            && !setupDone()
+            && existsAfter(/databases/$(database)/documents/meta/setup))
+        // invited existing account claiming its own invite
+        || (request.auth.uid == uid
+            && request.resource.data.email == myEmail()
+            && request.auth.token.email_verified == true
+            && exists(/databases/$(database)/documents/admin_invites/$(myEmail())))
+      );
+      // an admin can't remove themselves, so there is always at least one admin left
+      allow delete: if isAdmin() && request.auth.uid != uid;
+    }
+
+    match /admin_invites/{email} {
+      allow read: if isAdmin() || (signedIn() && myEmail() == email);
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(["email", "addedBy", "createdAt"])
+        && request.resource.data.email == email;
+      allow delete: if isAdmin() || (signedIn() && myEmail() == email);
+    }
+
+    // Exists once the first admin has registered; admin.html reads it to pick login vs. sign-up
+    match /meta/setup {
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(["by", "createdAt"])
+        && request.resource.data.by == request.auth.uid
+        && existsAfter(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     // Everything else is closed

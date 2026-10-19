@@ -253,10 +253,9 @@
         padding: 10px clamp(16px, calc((100vw - 1180px) / 2), 400px);
       }
       .dc-nav-inner {
-        display: flex;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
-        justify-content: space-between;
-        gap: 24px;
         /* Top state: full-width, square, blurred dark tint over the video */
         background: rgba(20, 16, 12, 0.22);
         backdrop-filter: blur(16px);
@@ -349,7 +348,6 @@
         display: flex;
         gap: 4px;
         align-items: center;
-        flex: 1;
         justify-content: center;
       }
       .dc-nav-link {
@@ -1873,17 +1871,9 @@
         background: #fff;
         border-radius: 36px;
         border: 1px solid rgba(26, 24, 20, 0.05);
-        box-shadow: 0 30px 70px rgba(26, 24, 20, 0.1);
         padding: 34px 36px;
         display: flex;
         flex-direction: column;
-        transition:
-          transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-          box-shadow 0.35s ease;
-      }
-      .pkg-card:hover {
-        transform: translateY(-6px) scale(1.01);
-        box-shadow: 0 42px 90px rgba(26, 24, 20, 0.16);
       }
       .pkg-card-top {
         display: flex;
@@ -1982,6 +1972,11 @@
         text-transform: uppercase;
         color: var(--ink);
         margin: 0 0 6px;
+      }
+      .pkg-subblock-note {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        margin: -2px 0 6px;
       }
       .pkg-subblock .pkg-rows {
         padding-top: 0;
@@ -3084,8 +3079,13 @@
         .dc-nav-cta {
           display: none;
         }
+        .dc-nav-inner {
+          grid-template-columns: auto 1fr;
+          padding: 12px 18px;
+        }
         .dc-burger {
           display: flex;
+          margin-left: auto;
         }
         .dc-feat-grid {
           grid-template-columns: 1fr 1fr;
@@ -3854,6 +3854,7 @@
               <a href="grooming.html" class="dc-nav-link active">Грумінг</a>
               <a href="#контакти" class="dc-nav-link">Контакти</a>
             </div>
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 8px">
             <a
               href="#"
               onclick="
@@ -3875,6 +3876,7 @@
             <button class="dc-burger" id="burger" aria-label="Меню">
               <span></span><span></span><span></span>
             </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -5115,7 +5117,7 @@
       window.addEventListener(
         "scroll",
         () => {
-          nav.classList.toggle("scrolled", window.scrollY > 40);
+          /* main page keeps the full-width bar — no pill on scroll */
         },
         { passive: true },
       );
@@ -5665,7 +5667,7 @@
             id: "extra",
             icon: "➕",
             label: "Додаткові послуги",
-            desc: "Послуги à la carte",
+            desc: "Послуги",
             note: "",
             groups: [
               {
@@ -5788,27 +5790,56 @@
               "</span></li>"
             );
           }
-          function subBlock(title, rws) {
+          function subBlock(title, rws, note) {
             return (
               '<div class="pkg-subblock"><div class="pkg-subblock-title">' +
               esc(title) +
-              '</div><ul class="pkg-rows">' +
+              "</div>" +
+              (note
+                ? '<div class="pkg-subblock-note">' + esc(note) + "</div>"
+                : "") +
+              '<ul class="pkg-rows">' +
               (rws || []).map(rowLi).join("") +
               "</ul></div>"
             );
           }
-          var listHtml = "";
-          if (cat.groups && cat.groups.length) {
-            var blocks = cat.groups.map(function (g) {
-              return subBlock(g.title, g.rows);
+          /* Rows saved as "Купання · до 7 кг" are split into titled groups
+             ("Купання" / "Стрижка без купання"), so the list stays readable. */
+          var groups = (cat.groups || []).map(function (g) {
+            return { title: g.title, note: g.note, rows: g.rows.slice() };
+          });
+          var plain = [];
+          (cat.rows || []).forEach(function (r) {
+            var i = r.name.indexOf(" · ");
+            if (i < 0) return plain.push(r);
+            var title = r.name.slice(0, i);
+            var item = Object.assign({}, r, { name: r.name.slice(i + 3) });
+            var g = groups.find(function (x) {
+              return x.title === title;
             });
-            if (cat.rows && cat.rows.length)
-              blocks.push(subBlock("Окремі послуги", cat.rows));
+            if (!g) {
+              g = { title: title, rows: [] };
+              groups.push(g);
+            }
+            /* defaults already list these rows — skip duplicates */
+            if (
+              !g.rows.some(function (x) {
+                return x.name === item.name;
+              })
+            )
+              g.rows.push(item);
+          });
+          var listHtml = "";
+          if (groups.length) {
+            var blocks = groups.map(function (g) {
+              return subBlock(g.title, g.rows, g.note);
+            });
+            if (plain.length) blocks.push(subBlock("Окремі послуги", plain));
             listHtml =
               '<div class="pkg-subblocks">' + blocks.join("") + "</div>";
-          } else if (cat.rows && cat.rows.length) {
+          } else if (plain.length) {
             listHtml =
-              '<ul class="pkg-rows">' + cat.rows.map(rowLi).join("") + "</ul>";
+              '<ul class="pkg-rows">' + plain.map(rowLi).join("") + "</ul>";
           }
 
           return (
@@ -5902,6 +5933,9 @@
               grm = raw
                 .filter((c) => c.id !== "bathing" && c.id !== "haircut_only")
                 .map((c) => {
+                  /* older saved content still has the long subtitle */
+                  if (c.desc === "Послуги à la carte")
+                    c = Object.assign({}, c, { desc: "Послуги" });
                   const def = DEFAULT_GROOMING.find((d) => d.id === c.id);
                   if (def && def.groups && !c.groups)
                     return Object.assign({}, c, { groups: def.groups });

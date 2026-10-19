@@ -22,113 +22,11 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
-    <!-- GSAP + ScrollTrigger — powers the scroll-scrubbed heading reveal (same as grooming page) -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
-      /* ============ Paw cursor ============ */
-      /* All variants 28×28 with hotspot (14,18) — identical sharpness.
-   Explicit rules instead of variable cascade, so every override applies. */
-      :root {
-        --paw-dark: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2728%27%20height%3D%2728%27%20viewBox%3D%270%200%20429%20403%27%20fill%3D%27%231A1814%27%20shape-rendering%3D%27geometricPrecision%27%3E%3Cpath%20d%3D%27M131.837%20403C128.335%20401.68%20123.194%20401.333%20119.191%20400.043C103.522%20395.08%2090.6218%20383.828%2083.5813%20368.975C75.5673%20352.383%2074.3586%20331.745%2080.4623%20314.348C84.9491%20301.913%2092.3878%20290.753%20102.139%20281.828C106.546%20277.785%20112.253%20273.568%20116.938%20269.7C123.802%20264.068%20130.058%20257.73%20135.602%20250.793C141.702%20243.064%20147.269%20234.502%20151.914%20225.799C155.388%20219.29%20158.222%20212.48%20161.451%20205.76C173.683%20180.307%20201.908%20161.766%20230.337%20171.737C247.85%20177.879%20260.885%20192.02%20268.338%20208.696C270.548%20213.555%20273.323%20219.72%20275.698%20224.407C281.383%20235.731%20288.5%20246.277%20296.875%20255.785C301.99%20261.5%20307.593%20266.76%20313.613%20271.51C317.945%20274.978%20322.888%20278.413%20326.84%20282.323C342.69%20298.018%20353.155%20317.663%20352.058%20340.385C350.885%20364.695%20338.565%20386.99%20316.048%20397.595C312.538%20399.263%20308.838%20400.493%20305.028%20401.255C303.265%20401.628%20298.88%20402.388%20297.418%20403H281.34C280.42%20402.71%20279.315%20402.433%20278.355%20402.313C271.353%20401.438%20265.203%20399.775%20258.445%20397.888C247.301%20394.775%20235.839%20390.61%20224.39%20388.71C205.904%20385.643%20186.625%20393.293%20169.078%20398.158C165.389%20399.198%20162.232%20400.048%20158.471%20400.815C156.11%20401.295%20149.376%20402.173%20147.422%20403H131.837Z%27%2F%3E%3Cpath%20d%3D%27M134.319%200H142.666C143.463%200.412578%20146.68%201.11972%20147.734%201.39535C149.771%201.9112%20151.759%202.6073%20153.673%203.47543C170.318%2011.0272%20182.649%2031.8027%20188.671%2048.2255C197.174%2071.4157%20200.217%20101.233%20189.679%20124.246C184.21%20136.464%20174.006%20145.931%20161.414%20150.471C150.021%20154.702%20137.407%20154.187%20126.398%20149.039C111.823%20142.25%20100.573%20127.019%2095.3137%20112.085C86.8087%2087.9348%2089.9544%2051.7215%20100.478%2028.6252C105.097%2018.4894%20113.001%208.1486%20123.358%203.62637C127.496%201.8195%20130.311%201.48024%20134.107%200.080195L134.319%200Z%27%2F%3E%3Cpath%20d%3D%27M285.295%200H295.68C297.117%200.673447%20301.44%201.65844%20303.777%202.60672C315.9%207.52592%20324.322%2019.8537%20329.11%2031.653C339.65%2057.622%20341.807%2091.612%20330.995%20117.844C325.142%20132.044%20314.895%20143.55%20300.522%20149.358C288.415%20154.249%20277.07%20154.621%20264.847%20149.626C251.837%20144.307%20242.28%20132.869%20237.132%20119.975C227.702%2096.359%20232.876%2064.432%20242.454%2041.647C248.515%2027.2277%20258.702%2011.7343%20272.98%204.43997C277.597%202.08052%20280.925%201.79491%20285.105%200.0800238L285.295%200Z%27%2F%3E%3Cpath%20d%3D%27M429%20182.172C427.977%20185.699%20427.82%20192.605%20427.18%20196.593C422.777%20224.065%20408.202%20254.29%20378.752%20261.18C353.857%20267.005%20331.45%20251.455%20326.195%20226.956C321.207%20203.706%20330.43%20178.818%20342.555%20159.266C352.48%20143.78%20365.702%20128.708%20384.37%20124.684C409.282%20119.313%20424.655%20139.868%20427.477%20161.978C427.927%20165.513%20428.207%20170.464%20428.93%20173.813L429%20174.128V182.172Z%27%2F%3E%3Cpath%20d%3D%27M0%20167.564C0.793037%20165.957%201.48027%20160.04%201.86923%20157.889C6.4104%20132.777%2027.779%20115.573%2053.3573%20127.582C75.1987%20137.837%2089.5668%20162.028%2098.0575%20183.739C104.531%20200.669%20106.457%20220.697%2098.7692%20237.479C94.1115%20247.886%2085.4358%20255.96%2074.7223%20259.863C64.2665%20263.745%2050.9987%20262.928%2040.9272%20258.17C23.9926%20250.173%2013.1958%20235.495%206.95843%20218.226C4.88353%20212.347%203.30657%20206.304%202.24426%20200.161C1.9027%20198.274%200.464348%20187.912%200%20186.909V167.564Z%27%2F%3E%3C%2Fsvg%3E")
-          14 18;
-        --paw-yellow: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2728%27%20height%3D%2728%27%20viewBox%3D%270%200%20429%20403%27%20fill%3D%27%23ef233c%27%20shape-rendering%3D%27geometricPrecision%27%3E%3Cpath%20d%3D%27M131.837%20403C128.335%20401.68%20123.194%20401.333%20119.191%20400.043C103.522%20395.08%2090.6218%20383.828%2083.5813%20368.975C75.5673%20352.383%2074.3586%20331.745%2080.4623%20314.348C84.9491%20301.913%2092.3878%20290.753%20102.139%20281.828C106.546%20277.785%20112.253%20273.568%20116.938%20269.7C123.802%20264.068%20130.058%20257.73%20135.602%20250.793C141.702%20243.064%20147.269%20234.502%20151.914%20225.799C155.388%20219.29%20158.222%20212.48%20161.451%20205.76C173.683%20180.307%20201.908%20161.766%20230.337%20171.737C247.85%20177.879%20260.885%20192.02%20268.338%20208.696C270.548%20213.555%20273.323%20219.72%20275.698%20224.407C281.383%20235.731%20288.5%20246.277%20296.875%20255.785C301.99%20261.5%20307.593%20266.76%20313.613%20271.51C317.945%20274.978%20322.888%20278.413%20326.84%20282.323C342.69%20298.018%20353.155%20317.663%20352.058%20340.385C350.885%20364.695%20338.565%20386.99%20316.048%20397.595C312.538%20399.263%20308.838%20400.493%20305.028%20401.255C303.265%20401.628%20298.88%20402.388%20297.418%20403H281.34C280.42%20402.71%20279.315%20402.433%20278.355%20402.313C271.353%20401.438%20265.203%20399.775%20258.445%20397.888C247.301%20394.775%20235.839%20390.61%20224.39%20388.71C205.904%20385.643%20186.625%20393.293%20169.078%20398.158C165.389%20399.198%20162.232%20400.048%20158.471%20400.815C156.11%20401.295%20149.376%20402.173%20147.422%20403H131.837Z%27%2F%3E%3Cpath%20d%3D%27M134.319%200H142.666C143.463%200.412578%20146.68%201.11972%20147.734%201.39535C149.771%201.9112%20151.759%202.6073%20153.673%203.47543C170.318%2011.0272%20182.649%2031.8027%20188.671%2048.2255C197.174%2071.4157%20200.217%20101.233%20189.679%20124.246C184.21%20136.464%20174.006%20145.931%20161.414%20150.471C150.021%20154.702%20137.407%20154.187%20126.398%20149.039C111.823%20142.25%20100.573%20127.019%2095.3137%20112.085C86.8087%2087.9348%2089.9544%2051.7215%20100.478%2028.6252C105.097%2018.4894%20113.001%208.1486%20123.358%203.62637C127.496%201.8195%20130.311%201.48024%20134.107%200.080195L134.319%200Z%27%2F%3E%3Cpath%20d%3D%27M285.295%200H295.68C297.117%200.673447%20301.44%201.65844%20303.777%202.60672C315.9%207.52592%20324.322%2019.8537%20329.11%2031.653C339.65%2057.622%20341.807%2091.612%20330.995%20117.844C325.142%20132.044%20314.895%20143.55%20300.522%20149.358C288.415%20154.249%20277.07%20154.621%20264.847%20149.626C251.837%20144.307%20242.28%20132.869%20237.132%20119.975C227.702%2096.359%20232.876%2064.432%20242.454%2041.647C248.515%2027.2277%20258.702%2011.7343%20272.98%204.43997C277.597%202.08052%20280.925%201.79491%20285.105%200.0800238L285.295%200Z%27%2F%3E%3Cpath%20d%3D%27M429%20182.172C427.977%20185.699%20427.82%20192.605%20427.18%20196.593C422.777%20224.065%20408.202%20254.29%20378.752%20261.18C353.857%20267.005%20331.45%20251.455%20326.195%20226.956C321.207%20203.706%20330.43%20178.818%20342.555%20159.266C352.48%20143.78%20365.702%20128.708%20384.37%20124.684C409.282%20119.313%20424.655%20139.868%20427.477%20161.978C427.927%20165.513%20428.207%20170.464%20428.93%20173.813L429%20174.128V182.172Z%27%2F%3E%3Cpath%20d%3D%27M0%20167.564C0.793037%20165.957%201.48027%20160.04%201.86923%20157.889C6.4104%20132.777%2027.779%20115.573%2053.3573%20127.582C75.1987%20137.837%2089.5668%20162.028%2098.0575%20183.739C104.531%20200.669%20106.457%20220.697%2098.7692%20237.479C94.1115%20247.886%2085.4358%20255.96%2074.7223%20259.863C64.2665%20263.745%2050.9987%20262.928%2040.9272%20258.17C23.9926%20250.173%2013.1958%20235.495%206.95843%20218.226C4.88353%20212.347%203.30657%20206.304%202.24426%20200.161C1.9027%20198.274%200.464348%20187.912%200%20186.909V167.564Z%27%2F%3E%3C%2Fsvg%3E")
-          14 18;
-      }
-      html,
-      body {
-        cursor: var(--paw-dark), auto;
-      }
-      a,
-      button,
-      [role="button"],
-      summary,
-      .dc-tab,
-      .dc-weighttab,
-      .dc-pill,
-      .dc-trainer,
-      .dc-bubble,
-      .dc-zoomarket-card,
-      .dc-nav-link,
-      .dc-social,
-      .dc-modal-close,
-      select,
-      label.dc-field {
-        cursor: var(--paw-yellow), pointer;
-      }
 
-      /* Dark surfaces — yellow paw everywhere (cursor: var() reapplied so it actually takes) */
-      .dc-footer,
-      .dc-footer *,
-      .dc-marquee,
-      .dc-marquee *,
-      .dc-price-header,
-      .dc-price-header * {
-        cursor: var(--paw-yellow), auto;
-      }
-      .dc-footer a,
-      .dc-footer button,
-      .dc-footer .dc-social,
-      .dc-marquee a,
-      .dc-marquee button,
-      .dc-price-header a,
-      .dc-price-header button {
-        cursor: var(--paw-yellow), pointer;
-      }
 
-      /* Yellow surfaces — pointer must be DARK (yellow on yellow disappears) */
-      :is(.dc-section-yellow, .dc-hero, .dc-process)
-        :is(
-          a,
-          button,
-          [role="button"],
-          summary,
-          .dc-tab,
-          .dc-weighttab,
-          .dc-pill,
-          .dc-trainer,
-          .dc-bubble,
-          .dc-zoomarket-card,
-          .dc-nav-link,
-          .dc-social,
-          .dc-modal-close,
-          select,
-          label.dc-field
-        ) {
-        cursor: var(--paw-dark), pointer;
-      }
 
-      /* Dark buttons regardless of section — yellow cursor */
-      .dc-btn-primary,
-      .dc-booking-go,
-      .dc-tab.active,
-      .dc-nav-link.active {
-        cursor: var(--paw-yellow), pointer;
-      }
-      /* On hover the primary/booking buttons invert to YELLOW — switch cursor to DARK */
-      .dc-btn-primary:hover,
-      .dc-booking-go:hover {
-        cursor: var(--paw-dark), pointer;
-      }
-      /* Light/Ghost buttons invert to DARK on hover — switch cursor to YELLOW */
-      .dc-btn-light:hover,
-      .dc-btn-ghost:hover {
-        cursor: var(--paw-yellow), pointer;
-      }
 
-      /* Modal overlay (dark backdrop) is clickable — yellow pointer */
-      .dc-modal-overlay {
-        cursor: var(--paw-yellow), pointer;
-      }
-      .dc-modal {
-        cursor: var(--paw-dark), auto;
-      }
-      .dc-modal a,
-      .dc-modal button,
-      .dc-modal [role="button"],
-      .dc-modal .dc-modal-close {
-        cursor: var(--paw-yellow), pointer;
-      }
 
       input[type="text"],
       input[type="email"],
@@ -147,71 +45,9 @@
         cursor: not-allowed;
       }
 
-      /* ============ Scroll reveal ============ */
-      .reveal {
-        opacity: 0;
-        transform: translateY(40px) scale(0.96);
-        transition:
-          opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-        transition-delay: calc(var(--reveal-i, 0) * 90ms);
-        will-change: opacity, transform;
-      }
-      .reveal.in-view {
-        opacity: 1;
-        transform: none;
-      }
-      /* Soft blurred glide-up for cards — matches the grooming page's directional
-         reveal. Applied on top of .reveal to card-like blocks via JS. */
-      .reveal.from-bottom {
-        transform: translateY(70px) scale(0.94);
-        filter: blur(10px);
-        transition:
-          opacity 1.25s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 1.25s cubic-bezier(0.16, 1, 0.3, 1),
-          filter 1.25s cubic-bezier(0.16, 1, 0.3, 1);
-        transition-delay: calc(var(--reveal-i, 0) * 130ms);
-        will-change: transform, opacity, filter;
-      }
-      .reveal.from-bottom.in-view {
-        transform: none;
-        filter: blur(0);
-      }
-      /* Scroll-scrubbed heading rise (driven by GSAP ScrollTrigger, same as
-         grooming). No opacity is set here on purpose — if GSAP fails to load the
-         headings stay visible; GSAP supplies the hidden from-state at runtime. */
-      .scrub-rise {
-        will-change: transform, opacity, filter;
-      }
-      /* Process bubbles: each flies in from its own edge, slightly tilted,
-   for a snappier "appears around the dog" feel. Uses :not(.in-view)
-   so .reveal.in-view's transform: none takes over after entry. */
-      .dc-bubble.reveal {
-        transition-duration: 1.15s;
-        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .dc-bubble-1.reveal:not(.in-view) {
-        transform: translate(-120px, -30px) rotate(-6deg) scale(0.85);
-      }
-      .dc-bubble-2.reveal:not(.in-view) {
-        transform: translate(120px, -30px) rotate(6deg) scale(0.85);
-      }
-      .dc-bubble-3.reveal:not(.in-view) {
-        transform: translate(-160px, 0px) rotate(-4deg) scale(0.85);
-      }
-      .dc-bubble-4.reveal:not(.in-view) {
-        transform: translate(160px, 0px) rotate(4deg) scale(0.85);
-      }
-      .dc-bubble-5.reveal:not(.in-view) {
-        transform: translate(-120px, 30px) rotate(-6deg) scale(0.85);
-      }
-      .dc-bubble-6.reveal:not(.in-view) {
-        transform: translate(120px, 30px) rotate(6deg) scale(0.85);
-      }
-
+      /* Scroll-reveal animations are disabled: everything is visible immediately. */
       @media (prefers-reduced-motion: reduce) {
-        .reveal,
-        .scrub-rise {
+        .reveal {
           opacity: 1 !important;
           transform: none !important;
           filter: none !important;
@@ -749,13 +585,6 @@
       .dc-btn-ghost:hover .dc-btn-arrow {
         background: var(--yellow);
         color: var(--ink);
-      }
-      /* When these light/ghost buttons invert to dark on hover, the cursor must be
-   yellow so it doesn't disappear against the dark bg (especially in
-   yellow sections where the default pointer is dark). */
-      .dc-btn-light:hover,
-      .dc-btn-ghost:hover {
-        cursor: var(--paw-yellow), pointer;
       }
       .dc-btn-yellow {
         background: var(--yellow);
@@ -1922,13 +1751,8 @@
         line-height: 1.75; margin: 0 0 24px;
         font-style: italic;
       }
-      @keyframes ctm-word-in {
-        from { filter: blur(8px); opacity: 0; transform: translateY(4px); }
-        to   { filter: blur(0);   opacity: 1; transform: translateY(0); }
-      }
       .ctm-word {
         display: inline-block;
-        animation: ctm-word-in 0.22s ease-in-out both;
       }
       .ctm-skills {
         display: flex; flex-wrap: wrap; gap: 6px;
@@ -3340,23 +3164,6 @@
         flex-direction: column;
         gap: 22px;
       }
-      /* Card reveal — matches grooming: blur + rise + scale as each scrolls in.
-         Hooks into the global .reveal/.in-view IntersectionObserver. */
-      .pkg-cell.reveal {
-        transition:
-          opacity 1.1s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
-          filter 1.1s cubic-bezier(0.16, 1, 0.3, 1);
-      }
-      .pkg-cell.reveal:not(.in-view) {
-        filter: blur(12px);
-        transform: translateY(60px) scale(0.97);
-      }
-      /* A lingering blur(0) clips the card's shadow to the cell's rectangle
-         (grey corners) — drop the filter entirely once revealed. */
-      .pkg-cell.reveal.in-view {
-        filter: none;
-      }
       /* reveal wrapper — hover lives on the card inside */
       .pkg-card {
         background: #fff;
@@ -3883,15 +3690,6 @@
         }
         .dc-bubble::after {
           display: none;
-        }
-        /* Drop the directional fly-in (only made sense around the circle) */
-        .dc-bubble-1.reveal:not(.in-view),
-        .dc-bubble-2.reveal:not(.in-view),
-        .dc-bubble-3.reveal:not(.in-view),
-        .dc-bubble-4.reveal:not(.in-view),
-        .dc-bubble-5.reveal:not(.in-view),
-        .dc-bubble-6.reveal:not(.in-view) {
-          transform: translateY(18px) scale(0.96);
         }
         .dc-section-head {
           flex-direction: column;
@@ -6977,26 +6775,14 @@
             ".dc-bubble",
             ".dc-zoomarket-hero > *",
             ".dc-videos",
+            ".dc-section-head",
           ].join(",");
           const selector = glideSelector + "," + plainSelector;
 
           // Wait one frame so React has flushed all section nodes.
           const raf = requestAnimationFrame(() => {
             const els = Array.from(document.querySelectorAll(selector));
-            const groups = new Map();
-            els.forEach((el) => {
-              el.classList.add("reveal");
-              // Cards get the blurred glide-up variant.
-              if (el.matches(glideSelector)) el.classList.add("from-bottom");
-              const parent = el.parentElement;
-              if (!groups.has(parent)) groups.set(parent, []);
-              groups.get(parent).push(el);
-            });
-            groups.forEach((siblings) => {
-              siblings.forEach((el, i) =>
-                el.style.setProperty("--reveal-i", i),
-              );
-            });
+            els.forEach((el) => el.classList.add("reveal"));
 
             const io = new IntersectionObserver(
               (entries) => {
@@ -7011,46 +6797,11 @@
             );
             els.forEach((el) => io.observe(el));
             App._revealIO = io;
-
-            // Scroll-scrubbed section headings — the signature grooming reveal:
-            // headings rise + un-blur in step with scroll. Falls back to plain
-            // visible headings if GSAP is unavailable or motion is reduced.
-            const reduce = window.matchMedia(
-              "(prefers-reduced-motion: reduce)",
-            ).matches;
-            if (!reduce && window.gsap && window.ScrollTrigger) {
-              gsap.registerPlugin(ScrollTrigger);
-              document
-                .querySelectorAll(".dc-section-head")
-                .forEach((el) => {
-                  el.classList.add("scrub-rise");
-                  gsap.fromTo(
-                    el,
-                    { autoAlpha: 0, y: 60, filter: "blur(8px)" },
-                    {
-                      autoAlpha: 1,
-                      y: 0,
-                      filter: "blur(0px)",
-                      ease: "none",
-                      scrollTrigger: {
-                        trigger: el,
-                        start: "top 90%",
-                        end: "top 55%",
-                        scrub: 0.8,
-                      },
-                    },
-                  );
-                });
-              ScrollTrigger.refresh();
-            }
           });
 
           return () => {
             cancelAnimationFrame(raf);
             App._revealIO?.disconnect();
-            if (window.ScrollTrigger) {
-              ScrollTrigger.getAll().forEach((t) => t.kill());
-            }
           };
         }, []);
 

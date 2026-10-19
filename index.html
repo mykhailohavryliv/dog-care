@@ -2957,9 +2957,27 @@
         padding: 44px 36px 40px;
         text-align: center;
       }
-      .dc-kinolog-card-icon {
-        font-size: 52px;
-        margin-bottom: 10px;
+      .dc-kinolog-card {
+        position: relative;
+        padding: 0;
+        overflow: hidden;
+        aspect-ratio: 2 / 3;
+      }
+      .dc-kinolog-photo {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: 50% 60%;
+      }
+      .dc-kinolog-card-facts {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 56px 20px 22px;
+        background: linear-gradient(to top, rgba(26,24,20,0.88), rgba(26,24,20,0));
       }
       .dc-kinolog-card-title {
         font-size: 18px;
@@ -3333,6 +3351,11 @@
       .pkg-cell.reveal:not(.in-view) {
         filter: blur(12px);
         transform: translateY(60px) scale(0.97);
+      }
+      /* A lingering blur(0) clips the card's shadow to the cell's rectangle
+         (grey corners) — drop the filter entirely once revealed. */
+      .pkg-cell.reveal.in-view {
+        filter: none;
       }
       /* reveal wrapper — hover lives on the card inside */
       .pkg-card {
@@ -5995,8 +6018,11 @@
                   </button>
                 </div>
                 <div className="dc-kinolog-card">
-                  <div className="dc-kinolog-card-icon">🐕</div>
-                  <div className="dc-kinolog-card-title">Кінолог на виїзд</div>
+                  <img
+                    className="dc-kinolog-photo"
+                    src="assets/images/kinolog.jpg"
+                    alt="Кінолог Dog Care з собакою"
+                  />
                   <div className="dc-kinolog-card-facts">
                     <div>
                       <div className="dc-kinolog-fact-num">1 год</div>

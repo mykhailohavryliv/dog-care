@@ -4885,9 +4885,17 @@
             <nav className={"dc-nav" + (scrolled ? " scrolled" : "")}>
               <div className="dc-wrap">
               <div className="dc-nav-inner">
-                <div className="dc-logo">
+                <a
+                  href="#"
+                  className="dc-logo"
+                  aria-label="Dog Care — на початок"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNav("home");
+                  }}
+                >
                   <LogoNav height={44} />
-                </div>
+                </a>
                 <div className="dc-nav-links">
                   {links.map((l) => (
                     <a
@@ -4945,7 +4953,17 @@
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="dc-mobile-menu-head">
-                    <LogoHorizontal height={28} color="var(--ink)" />
+                    <a
+                      href="#"
+                      aria-label="Dog Care — на початок"
+                      style={{ display: "flex" }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNav("home");
+                      }}
+                    >
+                      <LogoHorizontal height={28} color="var(--ink)" />
+                    </a>
                     <button
                       className="dc-mobile-menu-close"
                       onClick={() => setMenuOpen(false)}

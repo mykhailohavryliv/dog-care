@@ -5274,27 +5274,32 @@
                     <span className="dc-service-price-num">{s.price}</span>
                     <span className="dc-service-price-unit">{s.unit}</span>
                   </div>
-                  <a
-                    href="#contact"
+                  <button
+                    type="button"
                     className="dc-btn dc-btn-primary"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      document
-                        .getElementById("contact")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }}
+                    onClick={() =>
+                      window.openLeadModal &&
+                      window.openLeadModal(SERVICE_LEAD_SERVICE[s.id])
+                    }
                   >
                     Записатися{" "}
                     <span className="dc-btn-arrow">
                       <Arrow />
                     </span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
           </section>
         );
       }
+
+      const SERVICE_LEAD_SERVICE = {
+        kinology: "Курс кінології",
+        grooming: "Грумінг",
+        hotel: "Зоо‑готель",
+        nanny: "Зооняня",
+      };
 
       const PROCESS_STEPS = [
         { step: "01", title: "Знайомство", icon: "👋" },

@@ -5631,6 +5631,14 @@
         );
       }
 
+      const PRICE_LEAD_SERVICE = {
+        consult: "Консультація",
+        group: "Групові заняття",
+        courses: "Курс кінології",
+        nanny: "Зооняня",
+        hotel: "Зоо‑готель",
+      };
+
       function PriceCard({ group }) {
         return (
           <div className="pkg-cell">
@@ -5702,7 +5710,10 @@
               <button
                 type="button"
                 className="pkg-bookbtn"
-                onClick={() => window.openLeadModal && window.openLeadModal()}
+                onClick={() =>
+                  window.openLeadModal &&
+                  window.openLeadModal(PRICE_LEAD_SERVICE[group.id])
+                }
               >
                 Записатися
                 <span className="arr">
@@ -5952,7 +5963,6 @@
                     Що кажуть наші <em>випускники</em> та їхні люди
                   </>
                 }
-                subtitle="Більше 480 відгуків з оцінкою 5/5 на Google і Facebook."
               />
               <div className="dc-testi-row">
                 {TESTI.map((t, i) => (
@@ -6448,6 +6458,7 @@
       function LeadModal() {
         const SERVICES = [
           "Курс кінології",
+          "Групові заняття",
           "Кінолог на виїзд",
           "Грумінг",
           "Зоо‑готель",

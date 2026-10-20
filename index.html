@@ -6050,25 +6050,14 @@
           setErrors({});
           setSending(true);
           try {
-            const text = [
-              "🐾 <b>Нова заявка — Dog Care</b>",
-              "",
-              `👤 <b>Ім'я:</b> ${data.name}`,
-              `📞 <b>Телефон:</b> ${data.phone}`,
-              `🐕 <b>Вихованець:</b> ${data.pet || "—"}`,
-              `📋 <b>Послуга:</b> ${data.service}`,
-              `💬 <b>Повідомлення:</b> ${data.message || "—"}`,
-            ].join("\n");
-            await fetch(TELEGRAM_PROXY_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ text, parseMode: "HTML" }),
-            });
+            await sendLead(data);
+            setSending(false);
+            setSent(true);
           } catch (err) {
             console.error("Telegram error:", err);
+            setSending(false);
+            setErrors({ send: SEND_ERROR });
           }
-          setSending(false);
-          setSent(true);
         }
         return (
           <section
@@ -6218,6 +6207,7 @@
                       </React.Fragment>
                     )}
                   </button>
+                  {errors.send && <div className="lead-err">{errors.send}</div>}
                 </form>
                 {sent && (
                   <div className="dc-form-success">
@@ -6435,7 +6425,10 @@
       function formatPhone(raw) {
         let digits = raw.replace(/\D/g, "");
         if (digits.startsWith("380")) digits = digits.slice(3);
-        else if (digits.startsWith("0")) digits = digits.slice(1);
+        // pasted full number lands after the existing "+380 " prefix
+        if (digits.startsWith("380") && digits.length > 9)
+          digits = digits.slice(3);
+        if (digits.startsWith("0")) digits = digits.slice(1);
         digits = digits.slice(0, 9);
         let out = "+380";
         if (digits.length > 0) out += " " + digits.slice(0, 2);
@@ -6444,6 +6437,34 @@
         if (digits.length > 7) out += " " + digits.slice(7, 9);
         return out;
       }
+
+      function escapeHtml(v) {
+        return String(v)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      async function sendLead(data) {
+        const text = [
+          "🐾 <b>Нова заявка — Dog Care</b>",
+          "",
+          `👤 <b>Ім'я:</b> ${escapeHtml(data.name)}`,
+          `📞 <b>Телефон:</b> ${escapeHtml(data.phone)}`,
+          `🐕 <b>Вихованець:</b> ${escapeHtml(data.pet || "—")}`,
+          `📋 <b>Послуга:</b> ${escapeHtml(data.service)}`,
+          `💬 <b>Повідомлення:</b> ${escapeHtml(data.message || "—")}`,
+        ].join("\n");
+        const res = await fetch(TELEGRAM_PROXY_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, parseMode: "HTML" }),
+        });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+      }
+
+      const SEND_ERROR =
+        "Не вдалося надіслати заявку. Спробуйте ще раз або зателефонуйте нам.";
 
       function validateLeadForm(data) {
         const errors = {};
@@ -6513,25 +6534,14 @@
           setErrors({});
           setSending(true);
           try {
-            const text = [
-              "🐾 <b>Нова заявка — Dog Care</b>",
-              "",
-              `👤 <b>Ім'я:</b> ${data.name}`,
-              `📞 <b>Телефон:</b> ${data.phone}`,
-              `🐕 <b>Вихованець:</b> ${data.pet || "—"}`,
-              `📋 <b>Послуга:</b> ${data.service}`,
-              `💬 <b>Повідомлення:</b> ${data.message || "—"}`,
-            ].join("\n");
-            await fetch(TELEGRAM_PROXY_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ text, parseMode: "HTML" }),
-            });
+            await sendLead(data);
+            setSending(false);
+            setSent(true);
           } catch (err) {
-            console.error(err);
+            console.error("Telegram error:", err);
+            setSending(false);
+            setErrors({ send: SEND_ERROR });
           }
-          setSending(false);
-          setSent(true);
         }
 
         if (!open) return null;
@@ -6679,6 +6689,9 @@
                         </React.Fragment>
                       )}
                     </button>
+                    {errors.send && (
+                      <div className="lead-err">{errors.send}</div>
+                    )}
                   </form>
                 </>
               )}

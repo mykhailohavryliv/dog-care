@@ -4527,6 +4527,14 @@
       // Same-origin: this page and /api are one Vercel deployment.
       const TELEGRAM_PROXY_URL = "/api/send-telegram";
 
+      // html and body both set overflow-x: clip, so overflow:hidden on body
+      // alone doesn't stop the page from scrolling — lock both.
+      function lockScroll(on) {
+        const v = on ? "hidden" : "";
+        document.documentElement.style.overflow = v;
+        document.body.style.overflow = v;
+      }
+
       /* Paw print SVG */
       function PawPrint({ size = 32, color, rotate = 0, style = {} }) {
         return (
@@ -4862,11 +4870,10 @@
             if (e.key === "Escape") setMenuOpen(false);
           };
           document.addEventListener("keydown", onKey);
-          const prev = document.body.style.overflow;
-          document.body.style.overflow = "hidden";
+          lockScroll(true);
           return () => {
             document.removeEventListener("keydown", onKey);
-            document.body.style.overflow = prev;
+            lockScroll(false);
           };
         }, [menuOpen]);
         const links = [
@@ -5365,10 +5372,10 @@
             if (e.key === "Escape") onClose();
           };
           document.addEventListener("keydown", onKey);
-          document.body.style.overflow = "hidden";
+          lockScroll(true);
           return () => {
             document.removeEventListener("keydown", onKey);
-            document.body.style.overflow = "";
+            lockScroll(false);
           };
         }, [trainer]);
         if (!trainer) return null;
@@ -6532,11 +6539,8 @@
         }, []);
 
         useEffect(() => {
-          if (open) document.body.style.overflow = "hidden";
-          else document.body.style.overflow = "";
-          return () => {
-            document.body.style.overflow = "";
-          };
+          lockScroll(open);
+          return () => lockScroll(false);
         }, [open]);
 
         useEffect(() => {

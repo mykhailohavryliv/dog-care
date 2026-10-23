@@ -3762,7 +3762,10 @@
         .dc-about-dog {
           position: static;
           width: 100%;
+          max-width: none;
           height: auto;
+          margin: 0 auto;
+          transform: translateX(-13.8%);
         }
       }
 
@@ -3911,7 +3914,7 @@
         }
         .dc-about-photo {
           min-height: auto !important;
-          max-width: 340px !important;
+          max-width: 300px !important;
           width: 100% !important;
           margin: 0 auto !important;
           aspect-ratio: auto !important;
@@ -3920,7 +3923,10 @@
         .dc-about-dog {
           position: static !important;
           width: 100% !important;
+          max-width: none !important;
           height: auto !important;
+          margin: 0 auto !important;
+          transform: translateX(-13.8%) !important; /* PNG has a transparent shadow on the left; re-center the dog itself */
         }
         /* Wave: shorter so its curves don't look exaggerated on narrow viewports */
         .dc-services-wave {
@@ -3929,7 +3935,7 @@
         }
         /* Services lifted up over the dog's bottom on mobile too */
         .dc-services-section {
-          margin-top: -80px !important;
+          margin-top: -36px !important;
           padding-top: 60px !important;
         }
 

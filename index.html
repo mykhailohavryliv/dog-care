@@ -1191,15 +1191,18 @@
          bottom tucked under the cream wave. */
       .dc-about-dog {
         position: absolute;
-        right: 0; /* pinned to the section's right edge */
+        right: 5vw; /* nudged left so the dog sits centered in the right half */
         bottom: 0; /* sits at the bottom → lower part hidden by the wave */
         top: auto;
         left: auto;
         height: 100%; /* as tall as the whole section */
         width: auto; /* keep aspect ratio */
+        max-width: 44vw; /* never grow into the text column when the section gets taller */
+        object-fit: contain;
+        object-position: center bottom;
         display: block;
         pointer-events: none;
-        transform: scaleX(-1); /* mirrored horizontally */
+        transform: none; /* beagle already faces left */
       }
       .dc-about-stat {
         position: absolute;

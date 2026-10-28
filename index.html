@@ -90,6 +90,11 @@
         padding: 0;
         touch-action: manipulation;
         overflow-x: clip;
+        overscroll-behavior: none;
+      }
+      /* Overscroll (rubber-band) area matches the dark hero/footer, not the yellow body */
+      html {
+        background: var(--ink);
       }
       body {
         font-family: var(--body);
